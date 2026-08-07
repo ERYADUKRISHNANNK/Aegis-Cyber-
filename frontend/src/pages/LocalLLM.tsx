@@ -29,18 +29,19 @@ interface FileProgress {
 
 const AVAILABLE_MODELS = [
   {
-    id: "Xenova/LaMini-Flan-T5-78M",
-    name: "LaMini-Flan-T5 (Fast)",
-    size: "250 MB",
-    description: "Highly optimized text-to-text model. Recommended for fast CPU performance.",
+    id: "Xenova/distilgpt2",
+    name: "DistilGPT-2 (Fast)",
+    size: "~85 MB",
+    description: "Fast, lightweight GPT-2 model. Works offline after first download.",
   },
   {
-    id: "Xenova/Qwen1.5-0.5B-Chat",
-    name: "Qwen 1.5 0.5B Chat (Smart)",
-    size: "950 MB",
-    description: "Capable chat model. Better language comprehension, requires slightly more memory.",
+    id: "Xenova/gpt2",
+    name: "GPT-2 (Smarter)",
+    size: "~550 MB",
+    description: "Standard GPT-2. Better quality responses, requires more memory.",
   }
 ];
+
 
 export const LocalLLM: React.FC = () => {
   const [modelId, setModelId] = useState(AVAILABLE_MODELS[0].id);

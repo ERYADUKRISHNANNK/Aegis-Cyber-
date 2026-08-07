@@ -1,35 +1,46 @@
 @echo off
-title Aegis Cyber Platform Orchestrator
-echo ====================================================
-echo 🚀 Launching Aegis Cyber Platform Services...
-echo ====================================================
+title Aegis Cyber Platform Launcher
+color 0B
+echo.
+echo  =====================================================
+echo    AEGIS CYBER DEFENSE PLATFORM - QUICK LAUNCHER
+echo  =====================================================
+echo.
 
-:: 1. Launch Hardhat Local EVM Node
-echo [1/4] Starting EVM Local Node...
-start "EVM Local Node" cmd /k "cd blockchain && npx hardhat node"
-timeout /t 5
+:: Kill any previous instances
+echo  [*] Clearing old sessions...
+taskkill /f /im node.exe >nul 2>&1
+timeout /t 2 /nobreak >nul
 
-:: 2. Deploy Contracts
-echo [2/4] Deploying Smart Contracts...
-cd blockchain
-call npx hardhat run scripts/deploy.ts --network localhost
-cd ..
-timeout /t 3
+:: Start Backend
+echo  [1/2] Starting Backend Server (port 5000)...
+start "Aegis Backend" cmd /k "cd /d "%~dp0backend" && npm run dev"
+timeout /t 5 /nobreak >nul
 
-:: 3. Launch FastAPI AI Engine
-echo [3/4] Starting FastAPI AI Engine...
-start "FastAPI AI Engine" cmd /k "cd ai_engine && python app/main.py"
+:: Start Frontend
+echo  [2/2] Starting Frontend (port 3000)...
+start "Aegis Frontend" cmd /k "cd /d "%~dp0frontend" && npm run dev"
+timeout /t 4 /nobreak >nul
 
-:: 4. Launch Express Gatekeeper
-echo [4/4] Starting Express Zero Trust Gatekeeper...
-start "Express Gatekeeper" cmd /k "cd backend && npm run dev"
+:: Get local IP
+for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr "IPv4"') do (
+    set IP=%%a
+    goto :found
+)
+:found
+set IP=%IP: =%
 
-:: 5. Launch React Client
-echo [5/4] Starting React Cyberpunk Client...
-start "Vite React Client" cmd /k "cd frontend && npm run dev"
-
-echo ====================================================
-echo 🎉 All services initiated!
-echo Open http://localhost:3000 in your browser.
-echo ====================================================
+echo.
+echo  =====================================================
+echo   APP IS RUNNING!
+echo  =====================================================
+echo.
+echo   On this PC:    http://localhost:3000
+echo   On your phone: http://%IP%:3000
+echo.
+echo   (Make sure your phone is on the same WiFi!)
+echo   Login: admin / admin
+echo  =====================================================
+echo.
+start http://localhost:3000
 pause

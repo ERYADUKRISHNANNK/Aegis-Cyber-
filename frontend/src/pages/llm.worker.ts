@@ -1,7 +1,10 @@
 import { pipeline, env } from "@xenova/transformers";
 
-// Disable checking for local model files and download from Hugging Face hub
+// Allow model downloads from HuggingFace CDN
 env.allowLocalModels = false;
+env.allowRemoteModels = true;
+// Use HuggingFace CDN (avoids CORS issues)
+env.backends.onnx.wasm.numThreads = 1;
 
 let generator: any = null;
 let currentModel: string = "";
@@ -19,12 +22,8 @@ self.addEventListener("message", async (event: MessageEvent) => {
     try {
       self.postMessage({ status: "loading", message: `Initializing ${modelName}...` });
 
-      // Determine task based on model name
-      // Xenova/LaMini-Flan-T5-78M is a text2text-generation model.
-      // Xenova/Qwen1.5-0.5B-Chat is a text-generation model.
-      const task = modelName.includes("Flan") || modelName.includes("t5")
-        ? "text2text-generation"
-        : "text-generation";
+      // All models now use text-generation
+      const task = "text-generation";
 
       generator = await pipeline(task, modelName, {
         progress_callback: (progressData: any) => {
