@@ -3,11 +3,12 @@ import http from "http";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
+
+dotenv.config();
+
 import { connectDB } from "./config/db";
 import apiRouter from "./routes/api";
 import { websocketService } from "./services/websocketService";
-
-dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
