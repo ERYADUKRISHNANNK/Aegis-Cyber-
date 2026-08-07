@@ -10,6 +10,7 @@ import Compliance from "./pages/Compliance";
 import Copilot from "./pages/Copilot";
 import LocalLLM from "./pages/LocalLLM";
 import Admin from "./pages/Admin";
+import Team from "./pages/Team";
 
 const SecureRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { token } = useAuth();
@@ -30,6 +31,7 @@ export const App: React.FC = () => {
           <Route path="/vault" element={<SecureRoute><Vault /></SecureRoute>} />
           <Route path="/forensics" element={<SecureRoute><Forensics /></SecureRoute>} />
           <Route path="/compliance" element={<SecureRoute><Compliance /></SecureRoute>} />
+          <Route path="/team" element={<SecureRoute><Team /></SecureRoute>} />
           <Route path="/copilot" element={<SecureRoute><Copilot /></SecureRoute>} />
           <Route path="/llm" element={<SecureRoute><LocalLLM /></SecureRoute>} />
           <Route path="/admin" element={<SecureRoute><Admin /></SecureRoute>} />

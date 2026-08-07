@@ -3055,5 +3055,29 @@
     "timestamp": "2026-08-07T09:38:11.851Z",
     "createdAt": "2026-08-07T09:38:11.851Z",
     "updatedAt": "2026-08-07T09:38:11.851Z"
+  },
+  {
+    "action": "LOGOUT",
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "username": "admin",
+    "ip": "127.0.0.1",
+    "details": "User logged out",
+    "status": "SUCCESS",
+    "_id": "6a75aa0cddfdc046a72bac3b",
+    "timestamp": "2026-08-07T09:49:00.527Z",
+    "createdAt": "2026-08-07T09:49:00.528Z",
+    "updatedAt": "2026-08-07T09:49:00.528Z"
+  },
+  {
+    "action": "LOGIN",
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "username": "admin",
+    "ip": "127.0.0.1",
+    "details": "Login verified.",
+    "status": "SUCCESS",
+    "_id": "6a75aa10ddfdc046a72bac3d",
+    "timestamp": "2026-08-07T09:49:04.323Z",
+    "createdAt": "2026-08-07T09:49:04.323Z",
+    "updatedAt": "2026-08-07T09:49:04.323Z"
   }
 ]

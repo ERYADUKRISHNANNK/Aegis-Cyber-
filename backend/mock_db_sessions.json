@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3ODYwOTYxNDQsImV4cCI6MTc4NjEwMzM0NH0.30RNupBC6tDzU9PVyWAlAh0wZQW9G4Ekksv8-dQv8GM",
+    "ipAddress": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+    "fingerprint": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/151.0.0.0Safari/537.36",
+    "lat": 12.9716,
+    "lon": 77.5946,
+    "country": "IN",
+    "_id": "6a75aa10ddfdc046a72bac3c",
+    "active": true,
+    "createdAt": "2026-08-07T09:49:04.321Z",
+    "updatedAt": "2026-08-07T09:49:04.321Z"
+  }
+]
