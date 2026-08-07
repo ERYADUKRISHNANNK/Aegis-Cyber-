@@ -26,6 +26,7 @@ export const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/about" element={<div className="min-h-screen px-4 py-8 sm:px-6 lg:px-10"><Team /></div>} />
           
           <Route path="/dashboard" element={<SecureRoute><Dashboard /></SecureRoute>} />
           <Route path="/vault" element={<SecureRoute><Vault /></SecureRoute>} />

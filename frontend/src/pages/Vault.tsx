@@ -105,7 +105,7 @@ export const Vault: React.FC = () => {
       if (err.response?.data?.threatReport) {
         setErrorModal(err.response.data.threatReport);
       } else {
-        alert("Upload blocked by security boundary or server offline.");
+        alert(err.response?.data?.error || "Upload could not be completed. Verify that the security gateway is available and try again.");
       }
     } finally {
       setIsUploading(false);

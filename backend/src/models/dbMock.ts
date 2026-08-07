@@ -226,13 +226,37 @@ export class MockSessionLog {
     const list = loadData(sessionsFile);
     const sess = list.find(s => s.token === filter.token);
     if (sess) {
-      if (update.riskScore !== undefined) sess.riskScore = update.riskScore;
-      if (update.keystrokeAvg !== undefined) sess.keystrokeAvg = update.keystrokeAvg;
-      if (update.mouseJitterAvg !== undefined) sess.mouseJitterAvg = update.mouseJitterAvg;
-      if (update.fingerprint !== undefined) sess.fingerprint = update.fingerprint;
+      const changes = update.$set || update;
+      if (changes.riskScore !== undefined) sess.riskScore = changes.riskScore;
+      if (changes.keystrokeAvg !== undefined) sess.keystrokeAvg = changes.keystrokeAvg;
+      if (changes.mouseJitterAvg !== undefined) sess.mouseJitterAvg = changes.mouseJitterAvg;
+      if (changes.fingerprint !== undefined) sess.fingerprint = changes.fingerprint;
+      if (changes.active !== undefined) sess.active = changes.active;
+      if (changes.lastActive !== undefined) sess.lastActive = changes.lastActive;
       saveData(sessionsFile, list);
     }
     return { modifiedCount: sess ? 1 : 0 };
+  }
+
+  static async updateMany(filter: any, update: any) {
+    const list = loadData(sessionsFile);
+    const changes = update.$set || update;
+    let modifiedCount = 0;
+
+    for (const session of list) {
+      const matchesUser = !filter.userId || session.userId?.toString() === filter.userId.toString();
+      const matchesActive = filter.active === undefined || session.active === filter.active;
+      const matchesFingerprint = filter.fingerprint === undefined || session.fingerprint === filter.fingerprint;
+      const matchesToken = !filter.token || (filter.token.$ne !== undefined ? session.token !== filter.token.$ne : session.token === filter.token);
+
+      if (matchesUser && matchesActive && matchesFingerprint && matchesToken) {
+        Object.assign(session, changes);
+        modifiedCount += 1;
+      }
+    }
+
+    if (modifiedCount > 0) saveData(sessionsFile, list);
+    return { modifiedCount };
   }
 
   static async countDocuments(query: any = {}) {

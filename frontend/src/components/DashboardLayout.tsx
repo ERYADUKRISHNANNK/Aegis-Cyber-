@@ -26,7 +26,7 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { name: "Secure Vault", path: "/vault", icon: HardDrive },
     { name: "Forensics", path: "/forensics", icon: Binary },
     { name: "Compliance", path: "/compliance", icon: ClipboardCheck },
-    { name: "Professional Team", path: "/team", icon: ShieldAlert },
+    { name: "About Aegis", path: "/team", icon: ShieldAlert },
     { name: "AI Copilot", path: "/copilot", icon: Bot },
     { name: "Local LLM", path: "/llm", icon: Brain }
   ];

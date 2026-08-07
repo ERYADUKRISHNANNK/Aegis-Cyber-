@@ -302,6 +302,9 @@ export const logoutUser = async (req: any, res: Response) => {
     const { refreshToken } = req.body;
     if (!refreshToken) return res.status(400).json({ error: "refreshToken required" });
 
+    const authHeader = req.headers.authorization;
+    const accessToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
+
     const REFRESH_SECRET = process.env.REFRESH_SECRET || "SUPER_SECURE_REFRESH_SECRET";
     let decoded: any;
     try {
@@ -315,6 +318,13 @@ export const logoutUser = async (req: any, res: Response) => {
 
     user.refreshTokens = (user.refreshTokens || []).filter((t: string) => t !== refreshToken);
     await user.save();
+
+    if (accessToken) {
+      await SessionLog.updateOne(
+        { token: accessToken },
+        { $set: { active: false, lastActive: new Date() } }
+      );
+    }
 
     await AuditLog.create({ action: 'LOGOUT', userId: user._id, username: user.username, ip: req.ip || '127.0.0.1', details: 'User logged out', status: 'SUCCESS' });
 

@@ -36,6 +36,27 @@ export const zeroTrustGuard = (requiredRoles?: string[], policyAttrs?: { timeLim
     }
 
     // 3. Concurrent Session Detection
+    // A new login from the same browser supersedes its prior token. Without this
+    // cleanup, repeated sign-ins from one browser are counted as separate live
+    // sessions indefinitely and eventually lock the legitimate user out.
+    const browserFingerprint = (req.headers["x-browser-fingerprint"] as string) || "default_fingerprint";
+    const now = new Date();
+
+    await SessionLog.updateMany(
+      {
+        userId: user._id,
+        active: true,
+        fingerprint: browserFingerprint,
+        token: { $ne: req.token }
+      },
+      { $set: { active: false, lastActive: now } }
+    );
+
+    await SessionLog.updateOne(
+      { token: req.token },
+      { $set: { active: true, lastActive: now } }
+    );
+
     const activeSessionsCount = await SessionLog.countDocuments({
       userId: user._id,
       active: true
@@ -90,7 +111,6 @@ export const zeroTrustGuard = (requiredRoles?: string[], policyAttrs?: { timeLim
       // Gather current session parameters from headers/body
       const keystrokeHold = parseFloat((req.headers["x-biometrics-keystroke-hold"] as string) || "100.0");
       const mouseJitter = parseFloat((req.headers["x-biometrics-mouse-jitter"] as string) || "1.0");
-      const browserFingerprint = (req.headers["x-browser-fingerprint"] as string) || "default_fingerprint";
       
       // Look up previous session for geolocation travel validation
       const lastSession = await SessionLog.findOne({ userId: user._id }).sort({ createdAt: -1 });

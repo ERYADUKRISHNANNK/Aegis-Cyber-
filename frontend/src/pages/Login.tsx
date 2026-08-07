@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Shield, Fingerprint, Lock, ShieldAlert, Key } from "lucide-react";
 
@@ -213,6 +213,13 @@ export const Login: React.FC = () => {
                 >
                   {isRegister ? "Already registered? Sign in" : "Need a security credential? Register"}
                 </button>
+
+                <Link
+                  to="/about"
+                  className="block w-full rounded-3xl border border-cyber-cyan/25 bg-cyber-cyan/5 px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-cyber-cyan transition hover:border-cyber-cyan/60 hover:bg-cyber-cyan/10"
+                >
+                  Explore the Aegis project
+                </Link>
               </form>
             )}
           </div>
