@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import * as fs from "fs";
 import * as path from "path";
+import * as crypto from "crypto";
 
 // Load ABIs
 const fileRegistryAbi = [

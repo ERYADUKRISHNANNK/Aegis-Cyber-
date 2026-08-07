@@ -115,6 +115,9 @@ export class MockAuditLog {
     if (query.action && query.action.$in) {
       filtered = filtered.filter(l => query.action.$in.includes(l.action));
     }
+    if (query.action && typeof query.action === 'string') {
+      filtered = filtered.filter(l => l.action === query.action);
+    }
     
     return {
       sort: () => ({
@@ -123,8 +126,19 @@ export class MockAuditLog {
     };
   }
 
-  static async countDocuments() {
-    return loadData(auditsFile).length;
+  static async countDocuments(query: any = {}) {
+    const list = loadData(auditsFile);
+    let filtered = [...list];
+    if (query.action && query.action.$in) {
+      filtered = filtered.filter(l => query.action.$in.includes(l.action));
+    }
+    if (query.action && typeof query.action === 'string') {
+      filtered = filtered.filter(l => l.action === query.action);
+    }
+    if (query.status) {
+      filtered = filtered.filter(l => l.status === query.status);
+    }
+    return filtered.length;
   }
 }
 
@@ -177,10 +191,35 @@ export class MockSessionLog {
     return sess;
   }
 
-  static async findOne(query: any) {
+  static findOne(query: any) {
     const list = loadData(sessionsFile);
-    const sess = list.find(s => s.token === query.token);
-    return sess ? createDocMethods(sess, list, sessionsFile) : null;
+    let filtered = [...list];
+    
+    if (query && query.userId) {
+      filtered = filtered.filter(s => s.userId && s.userId.toString() === query.userId.toString());
+    }
+    if (query && query.token) {
+      filtered = filtered.filter(s => s.token === query.token);
+    }
+    
+    const result = {
+      _filtered: filtered,
+      sort: function(sortObj: any) {
+        // Sort by createdAt descending by default
+        const sortedList = [...this._filtered].sort((a, b) => {
+          const aDate = new Date(a.createdAt).getTime();
+          const bDate = new Date(b.createdAt).getTime();
+          return bDate - aDate;
+        });
+        return Promise.resolve(sortedList.length > 0 ? createDocMethods(sortedList[0], list, sessionsFile) : null);
+      }
+    };
+
+    // If called directly with await (no sort chaining)
+    const sess = filtered.length > 0 ? filtered[0] : null;
+    const promise = Promise.resolve(sess ? createDocMethods(sess, list, sessionsFile) : null) as any;
+    promise.sort = result.sort.bind({ _filtered: filtered });
+    return promise;
   }
 
   static async updateOne(filter: any, update: any) {

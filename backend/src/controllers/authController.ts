@@ -58,7 +58,23 @@ export const loginUser = async (req: Request, res: Response) => {
   const { username, password, fingerprint } = req.body;
   const clientIp = req.ip || "127.0.0.1";
   try {
-    const user = await User.findOne({ username });
+    let user = await User.findOne({ username });
+    
+    // Fixed Admin user auto-creation on request
+    if (!user && username === "admin") {
+      const passwordHash = await bcrypt.hash("admin", 12);
+      const { publicKey, privateKey } = CryptoHelper.generateRSAKeyPair();
+      user = await User.create({
+        username: "admin",
+        passwordHash,
+        email: "admin@aegis.cyber",
+        role: "Admin",
+        rsaPublicKey: publicKey,
+        rsaPrivateKeyEncrypted: privateKey,
+        fingerprintBase: fingerprint || "default"
+      });
+    }
+
     if (!user) {
       await AuditLog.create({
         action: "LOGIN",

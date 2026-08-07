@@ -1,0 +1,23 @@
+[
+  {
+    "fileName": "YADUKRISHNANNK.pdf",
+    "fileSize": 1452084,
+    "mimeType": "application/pdf",
+    "cid": "Qmf8b2dd08a5e266d89a19196b152e58e506622695d959",
+    "fileHash": "f8b2dd08a5e266d89a19196b152e58e506622695d9596401730a831237f7e7dd",
+    "owner": "6a75847a94e571eadc2d7580",
+    "ownerAddress": "0x39f672f8c9aec5a646122524ea6203e5f3a80222",
+    "threatScore": 0,
+    "encryptedAesKey": "E6pLnQj8gAQym3fitvHCLiRSaEaUbaJSI0V7niUO2CHHBrV+aGX9XRrhevKW1GL4e4lD3NU06xaQJlcKbCfYLo8mpt330a3Ni04MLZPGAA07cxYRYtNcyScfMO4cH+i2gZsLgSvhwzcRt9S7yixaarxvugdyv6jzMz3bTvG8HByYiiA1X6+KJM3elIsyM8G/7/InzqFYx8KUYAQeN2v8GKRVawjRpLxQcpvTrxEUvQ6XRFFToatNjTU1pypwYqku1Fzssa5+Oc0cZJqshzflf5k+ptngPVpZKZM73Sfs0cWF68TzwGwsuQvMYrwSG9N/1UA7D6IvtWmrcj43rgAec/+fsiOEgxNY1Wvs/B2PLRuD+AcQg+5802nf0ZRG418ShBmhK/P5PeWQFCUl8ppGvf6SyVAvhrmSpfxiqUUMb+Mncf09kTNexYd8g3kWKW8T+YQ5PYmjM18ujhMJujI8cEo3zG8+/99nLa7KJJFjFlbJ1GfZ8Iq7Zsw2bv4qrzEvEJBuwceVqeBXwiG7rQoio/r+t0g9aLIJo5TdCnVo3rajtmgwSPATeoGJNUO7Y0zLVWH2ghy/x5rN8JSfTLruEnVnIo3Wl45dAfmGJWGGn1kO52WgtuVI1Fmixy1tyT4CIBUade35rNEs29wGwzxiYijCtdEZlYEGekGPaxyNKCY=",
+    "iv": "60691f20bb086c8f1fdf896b",
+    "digitalSignature": "js5GYJ7fFh35IfCBMiCA+iVb72kGIslmm0Tu+yFs3cAa06ktuKS3YSKhysnpRAAFOM9CuDI9vY9s+/lHkv6Rvg/Pnm6QKqtcMX9ef0Tk5WZnMhBT3IL9rbdothixvOOPLXRLjgpvKhjIlwmApDZtR6Gx7X12SzBr1rU7esMDUuYlI+qII5bqPQeO5Ud3K172e1kPQrZWebii8HNhyyVtYVXkBE4FtIY/CRZZSt49j4sOyl9DbzTphGdRfV341AwPH0UFHE0DWGZYfwtgVRja19kdt/33QyM513PHRiKS3h4wwvbn5BuZ0mteyNLQxg0uAp+YG6bjkSnr0ukmcOUNFiBG5Hep39Vf8ZeKAXQdIKnW4o9ywRnDVwOzScOHxDETotN/n8U9vsc+3n8uLi7Tl5n2EPreHxYOKYxoCBgxfBPc8mZeJkkid3M5aYK6UF6eI7doe213do1FkT6mPYXF4LFpOjjCf4fMXx5BSq7EATk0Y1oiC0SJIx39ZnPdtMZ9zrzfBbPI5Ydh7AIpSIcaKtjrWCGJ2BSnxJ6rSeqg6n/BRODw8Mm3TebXlWQ6/hFdg3WS9Y3LTa/veT+oBCIydaTFHYDA2/Ty6TIF+/Yo39EJ7sqpQBW8IKbx7cZoltS8kxO6pns442m9I99tRIq8LgSgWkRTx7m8fwwBlt/BXQo=",
+    "blockchainTxHash": "0x0f2102b312df4c8d82031cfa259aa8e20000000000000000",
+    "selfDestruct": false,
+    "_id": "6a7585fd94e571eadc2d7585",
+    "isLocked": false,
+    "isRecycled": false,
+    "sharedWith": [],
+    "createdAt": "2026-08-07T07:15:09.833Z",
+    "updatedAt": "2026-08-07T07:15:09.833Z"
+  }
+]

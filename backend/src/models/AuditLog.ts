@@ -18,7 +18,9 @@ const AuditLogSchema = new Schema(
         "BLOCKCHAIN_TX",
         "SECURITY_ALERT",
         "POLICY_UPDATE",
-        "MFA_CHALLENGE"
+        "MFA_CHALLENGE",
+        "ISSUE_VC",
+        "VERIFY_VC"
       ],
       index: true
     },

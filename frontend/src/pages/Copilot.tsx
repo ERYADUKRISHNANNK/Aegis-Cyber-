@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { Send, Bot, ShieldCheck, ClipboardList, RefreshCw } from "lucide-react";
+import { Send, Bot, ClipboardList, RefreshCw } from "lucide-react";
 
 interface Message {
   sender: "user" | "copilot";
@@ -18,6 +18,11 @@ export const Copilot: React.FC = () => {
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isTyping]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,18 +46,16 @@ export const Copilot: React.FC = () => {
           actions: data.suggested_action_plan
         }
       ]);
-    } catch {
-      // Offline fallback
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          {
-            sender: "copilot",
-            text: "Offline response: AI engine is currently unreachable. Make sure the FastAPI service is active on port 8000.",
-            actions: ["Check AI docker container", "Inspect system routing"]
-          }
-        ]);
-      }, 500);
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.error || "Error communicating with security gateway.";
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "copilot",
+          text: `Request Failed: ${errorMsg}`,
+          actions: ["Check network connection", "Review Zero Trust session limits"]
+        }
+      ]);
     } finally {
       setIsTyping(false);
     }
@@ -61,7 +64,7 @@ export const Copilot: React.FC = () => {
   return (
     <div className="glass-panel rounded-xl h-[calc(100vh-12rem)] flex flex-col overflow-hidden">
       {/* Panel Header */}
-      <div className="p-4 border-b border-cyber-border bg-[#090610] flex items-center space-x-3">
+      <div className="p-4 border-b border-[rgba(139,92,246,0.25)] bg-[#090610] flex items-center space-x-3">
         <Bot className="h-6 w-6 text-cyber-cyan animate-bounce" />
         <div>
           <h3 className="text-sm font-bold font-cyber text-white">AI SEC DEFENSE COPILOT</h3>
@@ -131,10 +134,11 @@ export const Copilot: React.FC = () => {
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSubmit} className="p-4 border-t border-cyber-border bg-[#090610] flex space-x-3">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-[rgba(139,92,246,0.25)] bg-[#090610] flex space-x-3">
         <input
           type="text"
           value={query}
@@ -144,7 +148,8 @@ export const Copilot: React.FC = () => {
         />
         <button
           type="submit"
-          className="p-2 bg-cyber-cyan/20 border border-cyber-cyan hover:bg-cyber-cyan/30 text-cyber-cyan rounded-lg transition-all shadow-cyan"
+          disabled={isTyping}
+          className="p-2 bg-cyber-cyan/20 border border-cyber-cyan hover:bg-cyber-cyan/30 text-cyber-cyan rounded-lg transition-all shadow-cyan disabled:opacity-50"
         >
           <Send className="h-4 w-4" />
         </button>

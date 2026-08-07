@@ -72,6 +72,78 @@
       "artifacts": [
         "FileRegistry"
       ]
+    },
+    "C:\\Users\\LOQ\\Downloads\\Aegis-Cyber--main (1)\\Aegis-Cyber--main\\blockchain\\contracts\\DecentralizedID.sol": {
+      "lastModificationDate": 1786085970019,
+      "contentHash": "1373613e512ab74762ab5ff745783105",
+      "sourceName": "contracts/DecentralizedID.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "DecentralizedID"
+      ]
+    },
+    "C:\\Users\\LOQ\\Downloads\\Aegis-Cyber--main (1)\\Aegis-Cyber--main\\blockchain\\contracts\\FileRegistry.sol": {
+      "lastModificationDate": 1786085970036,
+      "contentHash": "99f524243adf570abb79a0beb9c5146c",
+      "sourceName": "contracts/FileRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "FileRegistry"
+      ]
     }
   }
 }

@@ -36,7 +36,7 @@ function waitForUrl(url, timeout = 120000, interval = 1000) {
     console.log('SKIP_START=1 set; not launching run_all.bat');
   }
 
-  const loginUrl = 'http://localhost:3001/login';
+  const loginUrl = 'http://localhost:3000/login';
   console.log('Waiting for frontend at', loginUrl);
   try {
     await waitForUrl(loginUrl, 120000);
@@ -50,8 +50,8 @@ function waitForUrl(url, timeout = 120000, interval = 1000) {
     await page.goto(loginUrl, { timeout: 30000 });
 
     // Fill username and password
-    await page.fill('input[placeholder="Enter account username"]', 'YADUKRISHNAN N K').catch(() => {});
-    await page.fill('input[type="password"]', '12345678').catch(() => {});
+    await page.fill('input[placeholder="Enter username"]', 'admin').catch(() => {});
+    await page.fill('input[type="password"]', 'admin').catch(() => {});
 
     // Click the primary login button (try common labels)
     const selectors = ['button:has-text("VERIFY IDENTITY GATEWAY")', 'button:has-text("Login")', 'button:has-text("Sign In")', 'button:has-text("VERIFY")'];
@@ -73,7 +73,7 @@ function waitForUrl(url, timeout = 120000, interval = 1000) {
         const resp = await (globalThis.fetch || fetch)('http://127.0.0.1:5000/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: 'YADUKRISHNAN N K', password: '12345678', fingerprint: 'Playwright' })
+          body: JSON.stringify({ username: 'admin', password: 'admin', fingerprint: 'Playwright' })
         });
         if (resp && resp.ok) {
           const data = await resp.json();
@@ -84,7 +84,7 @@ function waitForUrl(url, timeout = 120000, interval = 1000) {
             localStorage.setItem('user', JSON.stringify(u));
           }, token, user);
           console.log('Token injected into localStorage; reloading dashboard.');
-          await page.goto('http://localhost:3001/', { timeout: 15000 });
+          await page.goto('http://localhost:3000/', { timeout: 15000 });
         } else {
           console.warn('API login failed or backend unreachable.');
         }

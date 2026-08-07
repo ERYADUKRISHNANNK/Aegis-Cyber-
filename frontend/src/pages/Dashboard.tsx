@@ -62,23 +62,35 @@ export const Dashboard: React.FC = () => {
     fetchStats();
 
     const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const socket = new WebSocket(`${wsProtocol}//${window.location.host}`);
+    let socket: WebSocket | null = null;
+    
+    try {
+      socket = new WebSocket(`${wsProtocol}//${window.location.host}`);
 
-    socket.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setWsLogs((prev) => [data, ...prev].slice(0, 10));
+      socket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setWsLogs((prev) => [data, ...prev].slice(0, 10));
 
-        if (data.type === "THREAT_ALERT" || data.type === "UPLOAD_SUCCESS") {
-          fetchStats();
+          if (data.type === "THREAT_ALERT" || data.type === "UPLOAD_SUCCESS") {
+            fetchStats();
+          }
+        } catch {
+          console.error("Websocket parsing error.");
         }
-      } catch {
-        console.error("Websocket parsing error.");
-      }
-    };
+      };
+
+      socket.onerror = () => {
+        console.warn("WebSocket connection unavailable. Dashboard running in polling mode.");
+      };
+    } catch {
+      console.warn("Unable to establish WebSocket connection.");
+    }
 
     return () => {
-      socket.close();
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
     };
   }, []);
 

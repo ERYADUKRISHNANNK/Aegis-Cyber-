@@ -20,12 +20,14 @@ export default {
         }
       },
       fontFamily: {
-        mono: ["JetBrains Mono", "Fira Code", "monospace"]
+        mono: ["JetBrains Mono", "Fira Code", "monospace"],
+        cyber: ["Orbitron", "sans-serif"]
       },
       boxShadow: {
         cyber: "0 0 15px rgba(139, 92, 246, 0.4)",
         cyan: "0 0 15px rgba(6, 182, 212, 0.4)",
-        pink: "0 0 15px rgba(236, 72, 153, 0.4)"
+        pink: "0 0 15px rgba(236, 72, 153, 0.4)",
+        "cyber-glow": "0 0 30px rgba(139, 92, 246, 0.25), 0 0 60px rgba(6, 182, 212, 0.1)"
       }
     },
   },

@@ -8,6 +8,7 @@ import {
   Binary,
   ClipboardCheck,
   Bot,
+  Brain,
   Cpu,
   LogOut,
   Wallet,
@@ -24,7 +25,8 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { name: "Secure Vault", path: "/vault", icon: HardDrive },
     { name: "Forensics", path: "/forensics", icon: Binary },
     { name: "Compliance", path: "/compliance", icon: ClipboardCheck },
-    { name: "AI Copilot", path: "/copilot", icon: Bot }
+    { name: "AI Copilot", path: "/copilot", icon: Bot },
+    { name: "Local LLM", path: "/llm", icon: Brain }
   ];
 
   if (user?.role === "Admin" || user?.role === "Super Admin") {

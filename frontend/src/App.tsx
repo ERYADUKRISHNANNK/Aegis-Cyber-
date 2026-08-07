@@ -8,6 +8,7 @@ import Vault from "./pages/Vault";
 import Forensics from "./pages/Forensics";
 import Compliance from "./pages/Compliance";
 import Copilot from "./pages/Copilot";
+import LocalLLM from "./pages/LocalLLM";
 import Admin from "./pages/Admin";
 
 const SecureRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -30,6 +31,7 @@ export const App: React.FC = () => {
           <Route path="/forensics" element={<SecureRoute><Forensics /></SecureRoute>} />
           <Route path="/compliance" element={<SecureRoute><Compliance /></SecureRoute>} />
           <Route path="/copilot" element={<SecureRoute><Copilot /></SecureRoute>} />
+          <Route path="/llm" element={<SecureRoute><LocalLLM /></SecureRoute>} />
           <Route path="/admin" element={<SecureRoute><Admin /></SecureRoute>} />
 
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

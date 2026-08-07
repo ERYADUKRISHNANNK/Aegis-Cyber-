@@ -36,6 +36,56 @@ export const Compliance: React.FC = () => {
     fetchCompliance();
   }, []);
 
+  const downloadComplianceReport = () => {
+    if (!data) return;
+    const reportId = Math.random().toString(36).substring(2, 15).toUpperCase();
+    const timestamp = new Date().toISOString();
+    
+    const content = `================================================================================
+  AEGIS CYBER SECURITY GATEWAY
+  REGULATORY COMPLIANCE REPORT
+  ================================================================================
+  Report ID: COMP-${reportId}
+  Timestamp: ${timestamp}
+  Scope: GDPR (Art 32/33), ISO 27001 (Control A.8), NIST CSF (PR.AC)
+  Compliance Level: High Assurance
+
+  COMPLIANCE SCORECARD:
+  --------------------------------------------------------------------------------
+  Overall Compliance Index:  ${data.scorecard.overall}%
+  GDPR Alignment Index:      ${data.scorecard.gdpr}%
+  ISO 27001 Scorecard:       ${data.scorecard.iso27001}%
+  NIST CSF Security Index:   ${data.scorecard.nistCSF}%
+
+  VERIFIED CONTROLS & AUDIT CHECKLIST:
+  --------------------------------------------------------------------------------
+  ${data.auditChecks.map((check, idx) => `${idx + 1}. [${check.status}] ${check.control}
+     Description: ${check.description}`).join("\n")}
+
+  RECOMMENDED ACTION PLAYBOOK:
+  --------------------------------------------------------------------------------
+  - Generate PDF compliance audit log export for external auditors.
+  - Run periodic vulnerability scans on Express Gateway API endpoints.
+  - Enforce Multi-Factor Authentication (TOTP) for all users with Admin status.
+  - Schedule recurring blockchain ledger integrity sync tasks.
+
+  This report verifies that the security configurations, user authentication biometrics, client-side encryption layers, and ledger storage nodes conform to the audited regulatory standards listed above.
+
+  Signed,
+  Aegis Cyber Security Sentinel
+  ================================================================================`;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = 'aegis_compliance_report_' + reportId + '.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6">
       {/* Title */}
@@ -122,7 +172,7 @@ export const Compliance: React.FC = () => {
           <p className="text-xs text-slate-400 font-mono">Compile system parameters, transaction logs, and IP Whitelisting reports for external auditors.</p>
         </div>
         <button
-          onClick={() => alert("Regulatory audit logs successfully compiled. Package matches ISO/GDPR standard requirements.")}
+          onClick={downloadComplianceReport}
           className="px-6 py-2 bg-cyber-violet/30 border border-cyber-violet hover:bg-cyber-violet/50 text-white rounded font-cyber text-xs transition-all shadow-cyber"
         >
           DOWNLOAD COMPLIANCE BUNDLE

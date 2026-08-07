@@ -12,6 +12,8 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       }
-    }
+    },
+    // Proxy WebSocket connections to backend
+    ws: true
   }
 });
