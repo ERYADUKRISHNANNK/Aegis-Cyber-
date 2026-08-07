@@ -3691,5 +3691,17 @@
     "timestamp": "2026-08-07T11:40:13.141Z",
     "createdAt": "2026-08-07T11:40:13.141Z",
     "updatedAt": "2026-08-07T11:40:13.141Z"
+  },
+  {
+    "action": "LOGIN",
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "username": "admin",
+    "ip": "127.0.0.1",
+    "details": "Login verified.",
+    "status": "SUCCESS",
+    "_id": "6a75cbb949b53ce81f929088",
+    "timestamp": "2026-08-07T12:12:41.079Z",
+    "createdAt": "2026-08-07T12:12:41.079Z",
+    "updatedAt": "2026-08-07T12:12:41.079Z"
   }
 ]

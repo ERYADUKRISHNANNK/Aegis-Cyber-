@@ -97,9 +97,24 @@
     "lon": 77.5946,
     "country": "IN",
     "_id": "6a75c38272758ef8fe3bd2c0",
-    "active": true,
+    "active": false,
     "createdAt": "2026-08-07T11:37:38.431Z",
     "updatedAt": "2026-08-07T11:37:38.431Z",
-    "lastActive": "2026-08-07T11:43:03.098Z"
+    "lastActive": "2026-08-07T12:12:41.191Z"
+  },
+  {
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3ODYxMDQ3NjEsImV4cCI6MTc4NjExMTk2MX0.EmHPsAS5lNzdoL06dkQ88us45P42c3YUX7pqBKbU-NE",
+    "ipAddress": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+    "fingerprint": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/151.0.0.0Safari/537.36",
+    "lat": 12.9716,
+    "lon": 77.5946,
+    "country": "IN",
+    "_id": "6a75cbb949b53ce81f929087",
+    "active": true,
+    "createdAt": "2026-08-07T12:12:41.077Z",
+    "updatedAt": "2026-08-07T12:12:41.077Z",
+    "lastActive": "2026-08-07T12:58:33.232Z"
   }
 ]
