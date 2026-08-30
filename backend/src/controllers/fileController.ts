@@ -4,6 +4,7 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import { FileDocument } from "../models/FileDocument";
+import { FileActivity } from "../models/FileActivity";
 import { ThreatReport } from "../models/ThreatReport";
 import { AuditLog } from "../models/AuditLog";
 import { User } from "../models/User";
@@ -11,21 +12,105 @@ import { ipfsService } from "../services/ipfsService";
 import { blockchainService } from "../services/blockchainService";
 import { websocketService } from "../services/websocketService";
 import { CryptoHelper } from "../utils/cryptoHelper";
+import { resolveIPGeo } from "../services/geoLocationService";
 
 const AI_ENGINE_URL = process.env.AI_ENGINE_URL || "http://127.0.0.1:8000";
+
+/**
+ * Helper: Log a file activity event
+ */
+const logFileActivity = async (params: {
+  fileId: string;
+  fileName: string;
+  eventType: string;
+  performedBy: string;
+  performedByUsername: string;
+  ipAddress: string;
+  deviceFingerprint?: string;
+  userAgent?: string;
+  recipientUsername?: string;
+  recipientUserId?: string;
+  shareExpiry?: Date;
+  maxDownloads?: number;
+  downloadCount?: number;
+  success?: boolean;
+  failureReason?: string;
+  blockchainTxHash?: string;
+  metadata?: any;
+}) => {
+  try {
+    const geo = await resolveIPGeo(params.ipAddress);
+    const activity = await FileActivity.create({
+      fileId: params.fileId,
+      fileName: params.fileName,
+      eventType: params.eventType,
+      performedBy: params.performedBy,
+      performedByUsername: params.performedByUsername,
+      ipAddress: params.ipAddress,
+      geoLocation: {
+        city: geo.city,
+        region: geo.region,
+        country: geo.country,
+        countryCode: geo.countryCode,
+        lat: geo.lat,
+        lon: geo.lon,
+        isp: geo.isp,
+        org: geo.org
+      },
+      deviceFingerprint: params.deviceFingerprint || "",
+      userAgent: params.userAgent || "",
+      recipientUsername: params.recipientUsername || "",
+      recipientUserId: params.recipientUserId || undefined,
+      shareExpiry: params.shareExpiry || undefined,
+      maxDownloads: params.maxDownloads || 0,
+      downloadCount: params.downloadCount || 0,
+      success: params.success !== undefined ? params.success : true,
+      failureReason: params.failureReason || "",
+      blockchainTxHash: params.blockchainTxHash || "",
+      metadata: params.metadata || {}
+    });
+
+    // Broadcast activity via WebSocket
+    websocketService.notifyFileActivity({
+      fileId: params.fileId,
+      fileName: params.fileName,
+      eventType: params.eventType,
+      performedBy: params.performedByUsername,
+      ipAddress: params.ipAddress,
+      geoLocation: {
+        city: geo.city,
+        country: geo.country,
+        countryCode: geo.countryCode,
+        lat: geo.lat,
+        lon: geo.lon
+      },
+      timestamp: new Date().toISOString()
+    });
+
+    return activity;
+  } catch (err: any) {
+    console.warn(`Failed to log file activity: ${err.message}`);
+    return null;
+  }
+};
 
 export const uploadFile = async (req: any, res: Response) => {
   const file = req.file;
   const user = req.user;
   const clientIp = req.ip || "127.0.0.1";
-  const selfDestruct = req.body.selfDestruct === "true"; // Parse selfDestruct parameter
+  const userAgent = req.headers["user-agent"] || "";
+  const browserFingerprint = req.headers["x-browser-fingerprint"] || "";
+  const selfDestruct = req.body.selfDestruct === "true";
 
   if (!file) {
     return res.status(400).json({ error: "No file provided." });
   }
 
+  // Resolve upload location
+  const uploadGeo = await resolveIPGeo(clientIp);
+
   try {
-    // 1. Submit file to AI Security Engine for scans (Malware, ransomware, PII)
+    // 1. Submit file to AI Security Engine for scans
     const formData = new FormData();
     const blob = new Blob([file.buffer]);
     formData.append("file", blob, file.originalname);
@@ -52,7 +137,21 @@ export const uploadFile = async (req: any, res: Response) => {
 
     // Check classification result
     if (aiResult.suggested_action === "BLOCK" || aiResult.threat_score >= 60) {
-      // Incident preservation: save forensic logs
+      // Log blocked upload activity
+      await logFileActivity({
+        fileId: "blocked",
+        fileName: file.originalname,
+        eventType: "UPLOAD",
+        performedBy: user._id,
+        performedByUsername: user.username,
+        ipAddress: clientIp,
+        deviceFingerprint: browserFingerprint,
+        userAgent,
+        success: false,
+        failureReason: `AI Threat Score: ${aiResult.threat_score}/100. Flags: ${aiResult.detected_threats.join(", ")}`,
+        metadata: { threatScore: aiResult.threat_score, detectedThreats: aiResult.detected_threats }
+      });
+
       const report = await ThreatReport.create({
         fileName: file.originalname,
         fileHash: aiResult.file_hash || CryptoHelper.calculateSHA256(file.buffer),
@@ -72,11 +171,11 @@ export const uploadFile = async (req: any, res: Response) => {
         userId: user._id,
         username: user.username,
         ip: clientIp,
+        location: `${uploadGeo.city}, ${uploadGeo.country}`,
         details: `Upload blocked: ${file.originalname}. AI Threat Score: ${aiResult.threat_score}/100. Flags: ${aiResult.detected_threats.join(", ")}`,
         status: "BLOCKED"
       });
 
-      // Distribute alerts to dashboard WebSockets
       websocketService.notifyThreat(report);
 
       return res.status(403).json({
@@ -85,24 +184,20 @@ export const uploadFile = async (req: any, res: Response) => {
       });
     }
 
-    // 2. File Encryption (Zero Knowledge client-wrapping simulation)
-    const aesKey = crypto.randomBytes(32); // Generate unique AES key
+    // 2. File Encryption
+    const aesKey = crypto.randomBytes(32);
     const { encrypted, iv, authTag } = CryptoHelper.encryptAES(file.buffer, aesKey);
-
-    // Concatenate ciphertext and GCM authentication tag for secure retrieval
     const cipherBlock = Buffer.concat([encrypted, authTag]);
-
-    // Wrap AES key with user public key
     const wrappedAesKey = CryptoHelper.encryptRSA(aesKey, user.rsaPublicKey);
 
-    // 3. Pin to IPFS mock/cloud
+    // 3. Pin to IPFS
     const cid = await ipfsService.uploadFile(cipherBlock, file.originalname);
 
-    // Calculate signed digital signature verification hash
+    // Calculate signed digital signature
     const fileHash = CryptoHelper.calculateSHA256(cipherBlock);
     const signature = CryptoHelper.signHash(fileHash, user.rsaPrivateKeyEncrypted);
 
-    // 4. Registry transaction recorded on Solidity Smart Contract
+    // 4. Registry transaction on Solidity Smart Contract
     const ownerAddress = user.didAddress || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
     const blockchainResponse = await blockchainService.registerFileOnChain(
       fileHash,
@@ -112,7 +207,7 @@ export const uploadFile = async (req: any, res: Response) => {
       signature
     );
 
-    // 5. Store File document metadata
+    // 5. Store File document metadata with provenance
     const doc = await FileDocument.create({
       fileName: file.originalname,
       fileSize: file.size,
@@ -126,7 +221,28 @@ export const uploadFile = async (req: any, res: Response) => {
       iv: iv.toString("hex"),
       digitalSignature: signature,
       blockchainTxHash: blockchainResponse.txHash,
-      selfDestruct
+      selfDestruct,
+      // Provenance fields
+      uploadIpAddress: clientIp,
+      uploadGeoLocation: {
+        city: uploadGeo.city,
+        region: uploadGeo.region,
+        country: uploadGeo.country,
+        countryCode: uploadGeo.countryCode,
+        lat: uploadGeo.lat,
+        lon: uploadGeo.lon,
+        isp: uploadGeo.isp,
+        org: uploadGeo.org
+      },
+      uploadDeviceFingerprint: browserFingerprint,
+      uploadUserAgent: userAgent,
+      totalDownloads: 0,
+      totalShares: 0,
+      uniqueViewerIds: [user._id],
+      uniqueViewerCount: 1,
+      lastAccessedAt: new Date(),
+      lastAccessedBy: user.username,
+      versionNumber: 1
     });
 
     await AuditLog.create({
@@ -134,9 +250,30 @@ export const uploadFile = async (req: any, res: Response) => {
       userId: user._id,
       username: user.username,
       ip: clientIp,
+      location: `${uploadGeo.city}, ${uploadGeo.country}`,
       details: `File successfully encrypted and stored. CID: ${cid}. SelfDestruct: ${selfDestruct}`,
       blockchainTxHash: blockchainResponse.txHash,
       status: "SUCCESS"
+    });
+
+    // Log file activity
+    await logFileActivity({
+      fileId: doc._id.toString(),
+      fileName: file.originalname,
+      eventType: "UPLOAD",
+      performedBy: user._id,
+      performedByUsername: user.username,
+      ipAddress: clientIp,
+      deviceFingerprint: browserFingerprint,
+      userAgent,
+      blockchainTxHash: blockchainResponse.txHash,
+      metadata: {
+        fileSize: file.size,
+        mimeType: file.mimetype,
+        cid,
+        threatScore: aiResult.threat_score,
+        selfDestruct
+      }
     });
 
     websocketService.notifyUploadSuccess(doc);
@@ -155,6 +292,10 @@ export const downloadFile = async (req: any, res: Response) => {
   const { fileId } = req.params;
   const user = req.user;
   const clientIp = req.ip || "127.0.0.1";
+  const userAgent = req.headers["user-agent"] || "";
+  const browserFingerprint = req.headers["x-browser-fingerprint"] || "";
+
+  const downloadGeo = await resolveIPGeo(clientIp);
 
   try {
     const doc = await FileDocument.findById(fileId);
@@ -163,23 +304,52 @@ export const downloadFile = async (req: any, res: Response) => {
     }
 
     if (doc.isLocked) {
+      // Log blocked access
+      await logFileActivity({
+        fileId,
+        fileName: doc.fileName,
+        eventType: "ACCESS_CHECK",
+        performedBy: user._id,
+        performedByUsername: user.username,
+        ipAddress: clientIp,
+        deviceFingerprint: browserFingerprint,
+        userAgent,
+        success: false,
+        failureReason: "File locked by emergency lock policy"
+      });
       return res.status(403).json({ error: "File locked by emergency lock policy." });
     }
 
-    // 1. Verify User Access permissions on-chain or locally
+    // 1. Verify User Access permissions
     let hasAccess = false;
+    let shareInfo: any = null;
+
     if (doc.owner.toString() === user._id.toString()) {
       hasAccess = true;
     } else {
-      // Check shared metadata array
-      const share = doc.sharedWith.find((s) => s.accessor && s.accessor.toString() === user._id.toString());
+      const share = doc.sharedWith.find((s: any) => s.accessor && s.accessor.toString() === user._id.toString());
       if (share) {
         const withinTime = share.validUntil ? (new Date() < share.validUntil) : true;
         const withinLimit = share.maxDownloads ? (share.downloadCount < share.maxDownloads) : true;
         if (withinTime && withinLimit) {
           share.downloadCount += 1;
-          await doc.save();
+          shareInfo = share;
           hasAccess = true;
+        } else {
+          // Log expired/limited share access
+          await logFileActivity({
+            fileId,
+            fileName: doc.fileName,
+            eventType: "ACCESS_CHECK",
+            performedBy: user._id,
+            performedByUsername: user.username,
+            ipAddress: clientIp,
+            deviceFingerprint: browserFingerprint,
+            userAgent,
+            success: false,
+            failureReason: !withinTime ? "Share access expired" : "Download limit reached",
+            metadata: { shareExpiry: share.validUntil, downloadCount: share.downloadCount, maxDownloads: share.maxDownloads }
+          });
         }
       }
     }
@@ -190,49 +360,99 @@ export const downloadFile = async (req: any, res: Response) => {
         userId: user._id,
         username: user.username,
         ip: clientIp,
+        location: `${downloadGeo.city}, ${downloadGeo.country}`,
         details: `Access denied. No valid share contract for FileId: ${fileId}`,
         status: "FAILED"
       });
       return res.status(403).json({ error: "Unauthorized. Access not granted or expired." });
     }
 
-    // Sync validation check with smart contract
+    // Sync validation with smart contract
     await blockchainService.verifyAccessOnChain(doc.fileHash, user.didAddress || "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
 
     // 2. Download from IPFS
     const cipherBlock = await ipfsService.downloadFile(doc.cid);
 
-    // Verify hash integrity before decoding
+    // Verify hash integrity
     const verifyHash = CryptoHelper.calculateSHA256(cipherBlock);
     if (verifyHash !== doc.fileHash) {
+      await logFileActivity({
+        fileId,
+        fileName: doc.fileName,
+        eventType: "DOWNLOAD",
+        performedBy: user._id,
+        performedByUsername: user.username,
+        ipAddress: clientIp,
+        deviceFingerprint: browserFingerprint,
+        userAgent,
+        success: false,
+        failureReason: "Integrity hash mismatch - IPFS payload tampered"
+      });
+
       await AuditLog.create({
         action: "SECURITY_ALERT",
         userId: user._id,
         username: user.username,
         ip: clientIp,
+        location: `${downloadGeo.city}, ${downloadGeo.country}`,
         details: `Integrity check failed. Stored hash differs from downloaded IPFS payload CID: ${doc.cid}`,
         status: "BLOCKED"
       });
       return res.status(500).json({ error: "Decentralized payload integrity hash validation failed." });
     }
 
-    // Extract authTag and ciphertext
+    // 3. Decrypt
     const authTag = cipherBlock.subarray(cipherBlock.length - 16);
     const ciphertext = cipherBlock.subarray(0, cipherBlock.length - 16);
-
-    // 3. Decrypt Key and Buffer
     const aesKey = CryptoHelper.decryptRSA(doc.encryptedAesKey, user.rsaPrivateKeyEncrypted);
     const decrypted = CryptoHelper.decryptAES(ciphertext, aesKey, Buffer.from(doc.iv, "hex"), authTag);
 
-    // 4. Advanced: PDF Forensic Watermarking
+    // 4. PDF Forensic Watermarking
     let payload = decrypted;
     if (doc.mimeType === "application/pdf") {
       const watermarkText = `\n% Aegis Cyber Shield Forensic Tag: Decrypted by ${user.username} at ${new Date().toISOString()} | Signature: ${doc.digitalSignature.substring(0, 16)}\n`;
       payload = Buffer.concat([decrypted, Buffer.from(watermarkText)]);
     }
 
-    // 5. Advanced: Self-Destruct Lifecycle Trigger
+    // 5. Update file document with download stats
+    const uniqueViewers = doc.uniqueViewerIds || [];
+    const viewerAlreadyTracked = uniqueViewers.some((vid: any) => vid.toString() === user._id.toString());
+    if (!viewerAlreadyTracked) {
+      uniqueViewers.push(user._id);
+    }
+
+    doc.totalDownloads = (doc.totalDownloads || 0) + 1;
+    doc.uniqueViewerIds = uniqueViewers;
+    doc.uniqueViewerCount = uniqueViewers.length;
+    doc.lastAccessedAt = new Date();
+    doc.lastAccessedBy = user.username;
+    doc.lastAccessedByIp = clientIp;
+    doc.lastAccessedByGeo = {
+      city: downloadGeo.city,
+      region: downloadGeo.region,
+      country: downloadGeo.country,
+      countryCode: downloadGeo.countryCode,
+      lat: downloadGeo.lat,
+      lon: downloadGeo.lon,
+      isp: downloadGeo.isp,
+      org: downloadGeo.org
+    };
+    await doc.save();
+
+    // 6. Self-Destruct Lifecycle
     if (doc.selfDestruct) {
+      await logFileActivity({
+        fileId,
+        fileName: doc.fileName,
+        eventType: "SELF_DESTRUCT",
+        performedBy: user._id,
+        performedByUsername: user.username,
+        ipAddress: clientIp,
+        deviceFingerprint: browserFingerprint,
+        userAgent,
+        metadata: { reason: "Self-destruct triggered after download" }
+      });
+
       await FileDocument.findByIdAndDelete(doc._id);
       try {
         const mockIpfsPath = path.join(__dirname, "../../ipfs_mock", doc.cid);
@@ -242,22 +462,44 @@ export const downloadFile = async (req: any, res: Response) => {
       } catch (err) {
         console.warn("Unable to remove self-destruct file from IPFS mock folder:", err);
       }
-      
+
       await AuditLog.create({
         action: "DELETE",
         userId: user._id,
         username: user.username,
         ip: clientIp,
+        location: `${downloadGeo.city}, ${downloadGeo.country}`,
         details: `File self-destructed automatically after download. CID: ${doc.cid}`,
         status: "SUCCESS"
       });
     }
+
+    // 7. Log successful download activity
+    await logFileActivity({
+      fileId,
+      fileName: doc.fileName,
+      eventType: "DOWNLOAD",
+      performedBy: user._id,
+      performedByUsername: user.username,
+      ipAddress: clientIp,
+      deviceFingerprint: browserFingerprint,
+      userAgent,
+      recipientUsername: doc.owner.toString() !== user._id.toString() ? user.username : undefined,
+      downloadCount: shareInfo ? shareInfo.downloadCount : 0,
+      metadata: {
+        fileSize: doc.fileSize,
+        cid: doc.cid,
+        selfDestruct: doc.selfDestruct,
+        wasOwner: doc.owner.toString() === user._id.toString()
+      }
+    });
 
     await AuditLog.create({
       action: "DOWNLOAD",
       userId: user._id,
       username: user.username,
       ip: clientIp,
+      location: `${downloadGeo.city}, ${downloadGeo.country}`,
       details: `File downloaded and decrypted. CID: ${doc.cid}. SelfDestruct triggered: ${doc.selfDestruct}`,
       status: "SUCCESS"
     });
@@ -267,12 +509,20 @@ export const downloadFile = async (req: any, res: Response) => {
     return res.send(payload);
 
   } catch (error: any) {
+    console.error("Download handler fault:", error);
     return res.status(500).json({ error: error.message });
   }
 };
 
 export const shareFile = async (req: any, res: Response) => {
   const { fileId, targetUsername, durationSeconds, maxDownloads } = req.body;
+  const user = req.user;
+  const clientIp = req.ip || "127.0.0.1";
+  const userAgent = req.headers["user-agent"] || "";
+  const browserFingerprint = req.headers["x-browser-fingerprint"] || "";
+
+  const shareGeo = await resolveIPGeo(clientIp);
+
   try {
     const doc = await FileDocument.findById(fileId);
     if (!doc || doc.owner.toString() !== req.user._id.toString()) {
@@ -286,30 +536,66 @@ export const shareFile = async (req: any, res: Response) => {
     }
 
     const validUntil = durationSeconds > 0 ? new Date(Date.now() + durationSeconds * 1000) : undefined;
-    
-    // Update document sharing structures
+
     doc.sharedWith.push({
       accessor: recipient._id,
       accessorAddress: recipient.didAddress,
       validUntil,
       maxDownloads: maxDownloads || undefined,
-      downloadCount: 0
+      downloadCount: 0,
+      sharedAt: new Date(),
+      sharedByIp: clientIp,
+      sharedByGeo: {
+        city: shareGeo.city,
+        region: shareGeo.region,
+        country: shareGeo.country,
+        countryCode: shareGeo.countryCode,
+        lat: shareGeo.lat,
+        lon: shareGeo.lon,
+        isp: shareGeo.isp,
+        org: shareGeo.org
+      }
     });
+
+    // Update share counter
+    doc.totalShares = (doc.totalShares || 0) + 1;
     await doc.save();
+
+    // Log share activity
+    await logFileActivity({
+      fileId,
+      fileName: doc.fileName,
+      eventType: "SHARE",
+      performedBy: user._id,
+      performedByUsername: user.username,
+      ipAddress: clientIp,
+      deviceFingerprint: browserFingerprint,
+      userAgent,
+      recipientUsername: targetUsername,
+      recipientUserId: recipient._id.toString(),
+      shareExpiry: validUntil,
+      maxDownloads: maxDownloads || 0,
+      metadata: {
+        fileSize: doc.fileSize,
+        totalShares: doc.totalShares
+      }
+    });
 
     websocketService.notifyPermissionChange(fileId, recipient.username, "GRANTED");
 
     await AuditLog.create({
       action: "PERMISSION_CHANGE",
-      userId: req.user._id,
-      username: req.user.username,
-      ip: req.ip || "127.0.0.1",
+      userId: user._id,
+      username: user.username,
+      ip: clientIp,
+      location: `${shareGeo.city}, ${shareGeo.country}`,
       details: `Access granted to ${targetUsername} for FileId: ${fileId}`,
       status: "SUCCESS"
     });
 
     return res.json({ message: "Permissions successfully registered." });
   } catch (error: any) {
+    console.error("Share handler fault:", error);
     return res.status(500).json({ error: error.message });
   }
 };

@@ -6,8 +6,14 @@ import { registerUser, loginUser, refreshAccessToken, logoutUser, linkWalletAddr
 import { uploadFile, downloadFile, shareFile, getMyFiles } from "../controllers/fileController";
 import { getSystemHealth, updateRole, updateIPWhitelist, getAllUsers } from "../controllers/adminController";
 import { getForensicsTimeline, getComplianceReport, chatCopilot } from "../controllers/forensicsController";
+import analyticsRouter from "./analytics";
+import threatsRouter from "./threats";
 
 const router = Router();
+
+// Mount sub-routers
+router.use("/analytics", analyticsRouter);
+router.use("/threats", threatsRouter);
 const upload = multer({ limits: { fileSize: 50 * 1024 * 1024 } }); // 50MB max file size
 
 // Public Routes

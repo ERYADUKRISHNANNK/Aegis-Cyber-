@@ -5,7 +5,7 @@ import { SessionLog } from "../models/SessionLog";
 import { AuditLog } from "../models/AuditLog";
 
 // Configuration limits
-const MAX_CONCURRENT_SESSIONS = 3;
+const MAX_CONCURRENT_SESSIONS = 10;
 const AI_ENGINE_URL = process.env.AI_ENGINE_URL || "http://127.0.0.1:8000";
 
 export const zeroTrustGuard = (requiredRoles?: string[], policyAttrs?: { timeLimit?: boolean; geoRestrict?: string[] }) => {
@@ -42,11 +42,11 @@ export const zeroTrustGuard = (requiredRoles?: string[], policyAttrs?: { timeLim
     const browserFingerprint = (req.headers["x-browser-fingerprint"] as string) || "default_fingerprint";
     const now = new Date();
 
+    // Deactivate ALL other sessions for this user to prevent session count buildup
     await SessionLog.updateMany(
       {
         userId: user._id,
         active: true,
-        fingerprint: browserFingerprint,
         token: { $ne: req.token }
       },
       { $set: { active: false, lastActive: now } }

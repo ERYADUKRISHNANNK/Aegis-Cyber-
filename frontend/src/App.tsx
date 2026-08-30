@@ -11,6 +11,11 @@ import Copilot from "./pages/Copilot";
 import LocalLLM from "./pages/LocalLLM";
 import Admin from "./pages/Admin";
 import Team from "./pages/Team";
+import FileLifecycle from "./pages/FileLifecycle";
+import Analytics from "./pages/Analytics";
+import ThreatTopology from "./pages/ThreatTopology";
+import AgentSwarm from "./pages/AgentSwarm";
+import ThreatOracle from "./pages/ThreatOracle";
 
 const SecureRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { token } = useAuth();
@@ -36,6 +41,11 @@ export const App: React.FC = () => {
           <Route path="/copilot" element={<SecureRoute><Copilot /></SecureRoute>} />
           <Route path="/llm" element={<SecureRoute><LocalLLM /></SecureRoute>} />
           <Route path="/admin" element={<SecureRoute><Admin /></SecureRoute>} />
+          <Route path="/analytics" element={<SecureRoute><Analytics /></SecureRoute>} />
+          <Route path="/threats" element={<SecureRoute><ThreatTopology /></SecureRoute>} />
+          <Route path="/swarm" element={<SecureRoute><AgentSwarm /></SecureRoute>} />
+          <Route path="/oracle" element={<SecureRoute><ThreatOracle /></SecureRoute>} />
+          <Route path="/file/:fileId" element={<SecureRoute><FileLifecycle /></SecureRoute>} />
 
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

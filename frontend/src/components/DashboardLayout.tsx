@@ -14,7 +14,11 @@ import {
   Wallet,
   Activity,
   Fingerprint,
-  ShieldAlert
+  ShieldAlert,
+  BarChart3,
+  Globe,
+  Radar,
+  Cloud
 } from "lucide-react";
 
 export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -28,7 +32,11 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { name: "Compliance", path: "/compliance", icon: ClipboardCheck },
     { name: "About Aegis", path: "/team", icon: ShieldAlert },
     { name: "AI Copilot", path: "/copilot", icon: Bot },
-    { name: "Local LLM", path: "/llm", icon: Brain }
+    { name: "Local LLM", path: "/llm", icon: Brain },
+    { name: "Analytics", path: "/analytics", icon: BarChart3 },
+    { name: "Threat Map", path: "/threats", icon: Globe },
+    { name: "Agent Swarm", path: "/swarm", icon: Radar },
+    { name: "Threat Oracle", path: "/oracle", icon: Cloud }
   ];
 
   if (user?.role === "Admin" || user?.role === "Super Admin") {

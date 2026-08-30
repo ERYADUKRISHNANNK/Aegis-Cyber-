@@ -33,6 +33,39 @@ app.use(express.urlencoded({ extended: true }));
 // REST routes
 app.use("/api", apiRouter);
 
+// Model Context Protocol (MCP) SSE integration
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { mcpServer } from "./mcpServer";
+
+let globalTransport: SSEServerTransport | null = null;
+const activeTransports = new Map<string, SSEServerTransport>();
+
+app.get("/sse", async (req, res) => {
+  const sseTransport = new SSEServerTransport("/messages", res);
+  await mcpServer.connect(sseTransport);
+  
+  const sessionId = (sseTransport as any).sessionId;
+  if (sessionId) {
+    activeTransports.set(sessionId, sseTransport);
+    res.on("close", () => {
+      activeTransports.delete(sessionId);
+    });
+  } else {
+    globalTransport = sseTransport;
+  }
+});
+
+app.post("/messages", async (req, res) => {
+  const sessionId = req.query.sessionId as string;
+  if (sessionId && activeTransports.has(sessionId)) {
+    await activeTransports.get(sessionId)!.handlePostMessage(req, res);
+  } else if (globalTransport) {
+    await globalTransport.handlePostMessage(req, res);
+  } else {
+    res.status(400).send("No active Model Context Protocol SSE session.");
+  }
+});
+
 app.get("/health", (req, res) => {
   res.json({
     status: "healthy",

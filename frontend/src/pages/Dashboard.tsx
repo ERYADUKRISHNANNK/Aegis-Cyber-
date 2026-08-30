@@ -12,7 +12,7 @@ import {
   Pie,
   Cell
 } from "recharts";
-import { ShieldAlert, UploadCloud, Binary, Activity, Clock } from "lucide-react";
+import { ShieldAlert, UploadCloud, Binary, Activity, Clock, Globe, File, Download, Share2, MapPin } from "lucide-react";
 import GlobeScene from "../components/GlobeScene";
 
 interface TimelineItem {
@@ -25,10 +25,38 @@ interface TimelineItem {
   user: string;
 }
 
+interface ActivityEvent {
+  eventType: string;
+  fileName: string;
+  performedBy: string;
+  ipAddress: string;
+  geoLocation: { city: string; country: string; countryCode: string; lat: number; lon: number };
+  timestamp: string;
+}
+
+const EVENT_ICONS: Record<string, string> = {
+  UPLOAD: "⬆️",
+  DOWNLOAD: "⬇️",
+  SHARE: "🔗",
+  ACCESS_CHECK: "🔍",
+  DELETE: "🗑️",
+  SELF_DESTRUCT: "💥"
+};
+
+const EVENT_COLORS: Record<string, string> = {
+  UPLOAD: "text-cyber-cyan",
+  DOWNLOAD: "text-emerald-400",
+  SHARE: "text-cyber-violet",
+  ACCESS_CHECK: "text-yellow-400",
+  DELETE: "text-cyber-pink",
+  SELF_DESTRUCT: "text-red-400"
+};
+
 export const Dashboard: React.FC = () => {
   const [timeline, setTimeline] = useState<TimelineItem[]>([]);
   const [health, setHealth] = useState<any>(null);
   const [wsLogs, setWsLogs] = useState<any[]>([]);
+  const [liveActivities, setLiveActivities] = useState<ActivityEvent[]>([]);
 
   const data = [
     { name: "00:00", uploads: 4, blocked: 0 },
@@ -61,6 +89,19 @@ export const Dashboard: React.FC = () => {
 
     fetchStats();
 
+    // Load initial activity feed
+    const fetchActivityFeed = async () => {
+      try {
+        const res = await axios.get("/api/analytics/activity-feed?limit=20");
+        if (res.data.feed) {
+          setLiveActivities(res.data.feed);
+        }
+      } catch {
+        console.warn("Activity feed unavailable.");
+      }
+    };
+    fetchActivityFeed();
+
     const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     let socket: WebSocket | null = null;
     
@@ -71,6 +112,12 @@ export const Dashboard: React.FC = () => {
         try {
           const data = JSON.parse(event.data);
           setWsLogs((prev) => [data, ...prev].slice(0, 10));
+
+          // Handle file activity events
+          if (data.type === "FILE_ACTIVITY") {
+            const activity = data.payload;
+            setLiveActivities((prev) => [activity, ...prev].slice(0, 20));
+          }
 
           if (data.type === "THREAT_ALERT" || data.type === "UPLOAD_SUCCESS") {
             fetchStats();
@@ -203,6 +250,46 @@ export const Dashboard: React.FC = () => {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
+        {/* Live File Activity Feed (NEW) */}
+        <div className="glass-panel rounded-3xl p-6 border border-slate-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.15)]">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-sm font-bold text-white font-cyber uppercase tracking-[0.2em] flex items-center gap-2">
+              <Globe className="h-4 w-4 text-cyber-gold" />
+              Live File Activity
+            </h2>
+            <span className="rounded-full bg-cyber-gold/10 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-cyber-gold border border-cyber-gold/20">Live</span>
+          </div>
+          <div className="h-72 overflow-y-auto space-y-3 pr-2 font-mono text-[11px] text-slate-300">
+            {liveActivities.length === 0 ? (
+              <div className="text-slate-500 h-full flex items-center justify-center">Awaiting file activity events...</div>
+            ) : (
+              liveActivities.map((activity, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-slate-900/60 bg-[#04030c]/85 p-3 hover:bg-[#06050f]/90 transition"
+                >
+                  <div className="flex items-center justify-between gap-2 text-[10px]">
+                    <span className={`font-bold font-cyber uppercase ${EVENT_COLORS[activity.eventType] || "text-slate-400"}`}>
+                      {EVENT_ICONS[activity.eventType] || "📌"} {activity.eventType}
+                    </span>
+                    <span className="text-slate-500">{new Date(activity.timestamp).toLocaleTimeString()}</span>
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-300 truncate">
+                    {activity.fileName} — {activity.performedBy}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1.5 text-[9px] text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-2.5 w-2.5" />
+                      {activity.geoLocation?.city || "Unknown"}, {activity.geoLocation?.country || ""}
+                    </span>
+                    <span>{activity.ipAddress}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
         <div className="glass-panel rounded-3xl p-6 border border-slate-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.15)]">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-sm font-bold text-white font-cyber uppercase tracking-[0.2em]">Live Threat Telemetry</h2>
@@ -224,7 +311,9 @@ export const Dashboard: React.FC = () => {
             )}
           </div>
         </div>
+      </div>
 
+      <div className="grid gap-6 xl:grid-cols-2">
         <div className="glass-panel rounded-3xl p-6 border border-slate-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.15)]">
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-sm font-bold text-white font-cyber uppercase tracking-[0.2em]">Decision Timeline</h2>
@@ -247,6 +336,45 @@ export const Dashboard: React.FC = () => {
                   </div>
                 </div>
               ))
+            )}
+          </div>
+        </div>
+
+        <div className="glass-panel rounded-3xl p-6 border border-slate-900/80 shadow-[0_20px_80px_rgba(0,0,0,0.15)]">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-sm font-bold text-white font-cyber uppercase tracking-[0.2em]">Geographic Access Summary</h2>
+            <span className="rounded-full bg-cyber-cyan/10 px-3 py-1 text-[10px] uppercase tracking-[0.25em] text-cyber-cyan border border-cyber-cyan/20">Geo</span>
+          </div>
+          <div className="h-72 overflow-y-auto space-y-3 pr-2 font-mono text-[11px] text-slate-300">
+            {liveActivities.filter(a => a.geoLocation?.city && a.geoLocation.city !== "Unknown").length === 0 ? (
+              <div className="text-slate-500 h-full flex items-center justify-center">No geographic access data yet.</div>
+            ) : (
+              (() => {
+                const geoActivities = liveActivities.filter(a => a.geoLocation?.city && a.geoLocation.city !== "Unknown");
+                const cityCounts: Record<string, { city: string; country: string; countryCode: string; count: number }> = {};
+                for (const a of geoActivities) {
+                  const key = `${a.geoLocation.city}-${a.geoLocation.country}`;
+                  if (!cityCounts[key]) {
+                    cityCounts[key] = { city: a.geoLocation.city, country: a.geoLocation.country, countryCode: a.geoLocation.countryCode, count: 0 };
+                  }
+                  cityCounts[key].count++;
+                }
+                return Object.values(cityCounts)
+                  .sort((a, b) => b.count - a.count)
+                  .slice(0, 10)
+                  .map((geo, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-3 rounded-xl border border-slate-900/60 bg-[#04030a]/60">
+                      <div className="flex items-center gap-3">
+                        <MapPin className="h-4 w-4 text-cyber-cyan" />
+                        <div>
+                          <p className="text-[11px] text-white">{geo.city}, {geo.country}</p>
+                          <p className="text-[9px] text-slate-500">{geo.countryCode}</p>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-cyber-cyan/10 text-[10px] text-cyber-cyan">{geo.count} events</span>
+                    </div>
+                  ));
+              })()
             )}
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   UploadCloud,
   File,
@@ -10,7 +11,12 @@ import {
   RefreshCw,
   Clock,
   QrCode,
-  AlertTriangle
+  AlertTriangle,
+  MapPin,
+  Eye,
+  History,
+  BarChart3,
+  Globe
 } from "lucide-react";
 
 interface FileItem {
@@ -26,10 +32,19 @@ interface FileItem {
   createdAt: string;
   selfDestruct?: boolean;
   sharedWith: any[];
+  // Provenance fields
+  totalDownloads?: number;
+  totalShares?: number;
+  uniqueViewerCount?: number;
+  lastAccessedAt?: string;
+  lastAccessedBy?: string;
+  uploadIpAddress?: string;
+  uploadGeoLocation?: { city?: string; country?: string; countryCode?: string; lat?: number; lon?: number };
 }
 
 export const Vault: React.FC = () => {
   const { connectWallet, walletAddress } = useAuth();
+  const navigate = useNavigate();
   const [files, setFiles] = useState<FileItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -60,7 +75,14 @@ export const Vault: React.FC = () => {
           blockchainTxHash: "0x40149021da0e8e9ea9a0a04910ea2a0149089acbd0109ae9ea",
           createdAt: new Date().toISOString(),
           selfDestruct: false,
-          sharedWith: []
+          sharedWith: [],
+          totalDownloads: 5,
+          totalShares: 2,
+          uniqueViewerCount: 3,
+          lastAccessedAt: new Date(Date.now() - 3600000).toISOString(),
+          lastAccessedBy: "analyst",
+          uploadIpAddress: "203.0.113.42",
+          uploadGeoLocation: { city: "Mumbai", country: "India", countryCode: "IN" }
         }
       ]);
     }
@@ -156,6 +178,17 @@ export const Vault: React.FC = () => {
     }
   };
 
+  const formatTimeAgo = (ts?: string) => {
+    if (!ts) return "Never";
+    const diff = Date.now() - new Date(ts).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "Just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -164,6 +197,13 @@ export const Vault: React.FC = () => {
           <p className="text-sm text-slate-400">Live file access policy and blockchain-anchored custody for your sensitive assets.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => navigate("/analytics")}
+            className="inline-flex items-center gap-2 rounded-3xl border border-slate-800/80 bg-[#050712]/90 px-4 py-3 text-sm text-slate-300 transition hover:border-cyber-cyan hover:text-cyber-cyan"
+          >
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </button>
           {!walletAddress ? (
             <button
               onClick={connectWallet}
@@ -236,7 +276,8 @@ export const Vault: React.FC = () => {
                 <tr>
                   <th className="pb-3">Name</th>
                   <th className="pb-3">Size</th>
-                  <th className="pb-3">Status</th>
+                  <th className="pb-3">Origin</th>
+                  <th className="pb-3">Activity</th>
                   <th className="pb-3">Classification</th>
                   <th className="pb-3 text-right">Actions</th>
                 </tr>
@@ -247,29 +288,63 @@ export const Vault: React.FC = () => {
                     <td className="py-4 pr-4">
                       <div className="flex items-center gap-3">
                         <File className="h-4 w-4 text-cyber-cyan" />
-                        <span className="truncate text-white">{file.fileName}</span>
+                        <span className="truncate text-white max-w-[180px]" title={file.fileName}>{file.fileName}</span>
                       </div>
                     </td>
                     <td className="py-4 pr-4 text-slate-400">{(file.fileSize / 1024).toFixed(1)} KB</td>
                     <td className="py-4 pr-4">
-                      {file.selfDestruct ? (
-                        <span className="rounded-full bg-cyber-pink/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-cyber-pink">Self-destruct</span>
+                      {file.uploadGeoLocation?.city ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-mono text-slate-400 rounded-full bg-slate-900/50 px-2 py-0.5">
+                          <MapPin className="h-3 w-3 text-cyber-cyan" />
+                          {file.uploadGeoLocation.city}, {file.uploadGeoLocation.countryCode}
+                        </span>
                       ) : (
-                        <span className="rounded-full bg-cyber-cyan/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-cyber-cyan">Protected</span>
+                        <span className="text-[10px] text-slate-600 font-mono">Unknown</span>
                       )}
                     </td>
-                    <td className="py-4 pr-4 text-slate-300">
-                      {file.threatScore > 0 ? (
+                    <td className="py-4 pr-4">
+                      <div className="flex items-center gap-3 text-[10px] font-mono">
+                        <span className="inline-flex items-center gap-1 text-emerald-400" title="Downloads">
+                          <Download className="h-3 w-3" />
+                          {file.totalDownloads || 0}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-cyber-violet" title="Shares">
+                          <Share2 className="h-3 w-3" />
+                          {file.totalShares || file.sharedWith?.length || 0}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-cyber-cyan" title="Unique viewers">
+                          <Eye className="h-3 w-3" />
+                          {file.uniqueViewerCount || 0}
+                        </span>
+                        {file.lastAccessedAt && (
+                          <span className="text-slate-500" title={`Last accessed by ${file.lastAccessedBy}`}>
+                            <History className="h-3 w-3 inline mr-0.5" />
+                            {formatTimeAgo(file.lastAccessedAt)}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-4 pr-4">
+                      {file.selfDestruct ? (
+                        <span className="rounded-full bg-cyber-pink/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-cyber-pink">Self-destruct</span>
+                      ) : file.threatScore > 0 ? (
                         <span className="rounded-full bg-yellow-950/30 px-3 py-1 text-[10px] text-yellow-300">Threat {file.threatScore}</span>
                       ) : (
                         <span className="rounded-full bg-emerald-950/30 px-3 py-1 text-[10px] text-emerald-300">Clean</span>
                       )}
                     </td>
                     <td className="py-4 text-right">
-                      <button onClick={() => handleDownload(file)} className="rounded-full border border-slate-800/80 bg-[#04040d]/90 p-2 text-cyber-cyan transition hover:border-cyber-cyan">
+                      <button
+                        onClick={() => navigate(`/file/${file._id}`)}
+                        className="rounded-full border border-slate-800/80 bg-[#04040d]/90 p-2 text-cyber-gold transition hover:border-cyber-gold mr-1"
+                        title="View file lifecycle"
+                      >
+                        <Globe className="h-4 w-4" />
+                      </button>
+                      <button onClick={() => handleDownload(file)} className="rounded-full border border-slate-800/80 bg-[#04040d]/90 p-2 text-cyber-cyan transition hover:border-cyber-cyan mr-1">
                         <Download className="h-4 w-4" />
                       </button>
-                      <button onClick={() => setSharingFile(file)} className="ml-2 rounded-full border border-slate-800/80 bg-[#04040d]/90 p-2 text-cyber-violet transition hover:border-cyber-violet">
+                      <button onClick={() => setSharingFile(file)} className="rounded-full border border-slate-800/80 bg-[#04040d]/90 p-2 text-cyber-violet transition hover:border-cyber-violet">
                         <Share2 className="h-4 w-4" />
                       </button>
                     </td>

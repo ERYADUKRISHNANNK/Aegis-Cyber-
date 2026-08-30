@@ -75,6 +75,30 @@ export class WebSocketService {
       }
     });
   }
+
+  /**
+   * Broadcast file activity events to all connected SOC clients
+   */
+  notifyFileActivity(activity: {
+    fileId: string;
+    fileName: string;
+    eventType: string;
+    performedBy: string;
+    ipAddress: string;
+    geoLocation: {
+      city: string;
+      country: string;
+      countryCode: string;
+      lat: number;
+      lon: number;
+    };
+    timestamp: string;
+  }) {
+    this.broadcast({
+      type: "FILE_ACTIVITY",
+      payload: activity
+    });
+  }
 }
 
 export const websocketService = new WebSocketService();
