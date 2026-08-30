@@ -18,7 +18,8 @@ import {
   BarChart3,
   Globe,
   Radar,
-  Cloud
+  Cloud,
+  Inbox
 } from "lucide-react";
 
 export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -28,6 +29,7 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
   const navigation = [
     { name: "SOC Console", path: "/dashboard", icon: Shield },
     { name: "Secure Vault", path: "/vault", icon: HardDrive },
+    { name: "Shared Inbox", path: "/inbox", icon: Inbox },
     { name: "Forensics", path: "/forensics", icon: Binary },
     { name: "Compliance", path: "/compliance", icon: ClipboardCheck },
     { name: "About Aegis", path: "/team", icon: ShieldAlert },

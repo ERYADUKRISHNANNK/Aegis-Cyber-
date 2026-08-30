@@ -610,3 +610,231 @@ export const getMyFiles = async (req: any, res: Response) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+/**
+ * GET /api/files/shared-with-me
+ * Returns files shared with the current user with share details
+ */
+export const getSharedWithMe = async (req: any, res: Response) => {
+  try {
+    const userId = req.user._id;
+    const username = req.user.username;
+
+    // Find all files where the current user is in sharedWith
+    const files = await FileDocument.find({
+      "sharedWith.accessor": userId,
+      isRecycled: false
+    }).populate("owner", "username email");
+
+    // Extract the share details for the current user
+    const sharedFiles = files.map((doc: any) => {
+      const share = doc.sharedWith.find(
+        (s: any) => s.accessor && s.accessor.toString() === userId.toString()
+      );
+
+      const now = new Date();
+      const isExpired = share?.validUntil ? now > new Date(share.validUntil) : false;
+      const isDownloadLimitReached = share?.maxDownloads
+        ? (share.downloadCount || 0) >= share.maxDownloads
+        : false;
+      const isActive = !isExpired && !isDownloadLimitReached && !doc.isLocked;
+
+      return {
+        _id: doc._id,
+        fileName: doc.fileName,
+        fileSize: doc.fileSize,
+        mimeType: doc.mimeType,
+        cid: doc.cid,
+        threatScore: doc.threatScore,
+        owner: doc.owner,
+        // Share details
+        sharedAt: share?.sharedAt || doc.createdAt,
+        validUntil: share?.validUntil || null,
+        maxDownloads: share?.maxDownloads || 0,
+        downloadCount: share?.downloadCount || 0,
+        sharedByIp: share?.sharedByIp || "",
+        sharedByGeo: share?.sharedByGeo || {},
+        // Status
+        isActive,
+        isExpired,
+        isDownloadLimitReached,
+        isLocked: doc.isLocked,
+        // Provenance
+        uploadGeoLocation: doc.uploadGeoLocation || {},
+        createdAt: doc.createdAt
+      };
+    });
+
+    // Sort by most recently shared first
+    sharedFiles.sort((a: any, b: any) => new Date(b.sharedAt).getTime() - new Date(a.sharedAt).getTime());
+
+    return res.json({ files: sharedFiles, total: sharedFiles.length });
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
+
+/**
+ * POST /api/files/generate-share-link
+ * Generates a share link with token for QR code
+ */
+export const generateShareLink = async (req: any, res: Response) => {
+  try {
+    const { fileId, durationSeconds, maxDownloads } = req.body;
+    const user = req.user;
+    const crypto = await import("crypto");
+
+    const doc = await FileDocument.findById(fileId);
+    if (!doc || doc.owner.toString() !== user._id.toString()) {
+      return res.status(403).json({ error: "Not authorized." });
+    }
+
+    // Generate a unique share token
+    const shareToken = crypto.randomBytes(32).toString("hex");
+    const validUntil = durationSeconds > 0 ? new Date(Date.now() + durationSeconds * 1000) : null;
+
+    // Store the share token on the file's sharedWith array
+    doc.sharedWith.push({
+      accessor: user._id,
+      accessorAddress: user.didAddress,
+      validUntil,
+      maxDownloads: maxDownloads || undefined,
+      downloadCount: 0,
+      sharedAt: new Date(),
+      sharedByIp: req.ip || "127.0.0.1",
+      sharedByGeo: {},
+      shareToken,
+      isPublicLink: true
+    });
+
+    doc.totalShares = (doc.totalShares || 0) + 1;
+    await doc.save();
+
+    // Build the share URL
+    const baseUrl = req.headers.origin || `http://${req.headers.host}`;
+    const shareUrl = `${baseUrl}/share/${shareToken}`;
+
+    return res.json({
+      shareUrl,
+      shareToken,
+      validUntil: validUntil?.toISOString() || null,
+      maxDownloads: maxDownloads || 0,
+      fileId: doc._id,
+      fileName: doc.fileName
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * GET /api/files/public-share/:shareToken
+ * Public endpoint to get file info from a share link (no auth required)
+ */
+export const getPublicShareInfo = async (req: any, res: Response) => {
+  try {
+    const { shareToken } = req.params;
+    const doc = await FileDocument.findOne({ "sharedWith.shareToken": shareToken });
+
+    if (!doc) {
+      return res.status(404).json({ error: "Invalid or expired share link." });
+    }
+
+    const share = doc.sharedWith.find((s: any) => s.shareToken === shareToken);
+    if (!share) {
+      return res.status(404).json({ error: "Share link not found." });
+    }
+
+    // Check validity
+    const now = new Date();
+    const isExpired = share.validUntil ? now > new Date(share.validUntil) : false;
+    const isDownloadLimitReached = share.maxDownloads ? (share.downloadCount || 0) >= share.maxDownloads : false;
+
+    if (isExpired || isDownloadLimitReached || doc.isLocked) {
+      return res.status(403).json({
+        error: isExpired ? "Share link has expired." : isDownloadLimitReached ? "Download limit reached." : "File is locked.",
+        expired: isExpired,
+        limitReached: isDownloadLimitReached
+      });
+    }
+
+    return res.json({
+      fileName: doc.fileName,
+      fileSize: doc.fileSize,
+      mimeType: doc.mimeType,
+      owner: doc.owner,
+      threatScore: doc.threatScore,
+      validUntil: share.validUntil,
+      maxDownloads: share.maxDownloads,
+      downloadCount: share.downloadCount
+    });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+/**
+ * GET /api/files/public-download/:shareToken
+ * Public download endpoint using share token (no JWT required)
+ */
+export const publicDownload = async (req: any, res: Response) => {
+  try {
+    const { shareToken } = req.params;
+    const clientIp = req.ip || "127.0.0.1";
+
+    const doc = await FileDocument.findOne({ "sharedWith.shareToken": shareToken });
+    if (!doc) {
+      return res.status(404).json({ error: "Invalid share link." });
+    }
+
+    const share = doc.sharedWith.find((s: any) => s.shareToken === shareToken);
+    if (!share) {
+      return res.status(404).json({ error: "Share not found." });
+    }
+
+    // Validate
+    const now = new Date();
+    if (share.validUntil && now > new Date(share.validUntil)) {
+      return res.status(403).json({ error: "Share link has expired." });
+    }
+    if (share.maxDownloads && (share.downloadCount || 0) >= share.maxDownloads) {
+      return res.status(403).json({ error: "Download limit reached." });
+    }
+    if (doc.isLocked) {
+      return res.status(403).json({ error: "File is locked." });
+    }
+
+    // Increment download count
+    share.downloadCount = (share.downloadCount || 0) + 1;
+    doc.totalDownloads = (doc.totalDownloads || 0) + 1;
+    await doc.save();
+
+    // Log activity
+    await logFileActivity({
+      fileId: doc._id.toString(),
+      fileName: doc.fileName,
+      eventType: "DOWNLOAD",
+      performedBy: "public-link",
+      performedByUsername: "anonymous",
+      ipAddress: clientIp,
+      success: true,
+      metadata: { shareToken, downloadType: "public_link" }
+    });
+
+    // Serve the file
+    const { ipfsService } = await import("../services/ipfsService");
+    const { CryptoHelper } = await import("../utils/cryptoHelper");
+    const cipherBlock = await ipfsService.downloadFile(doc.cid);
+    const decrypted = CryptoHelper.decryptAesGcm(
+      Buffer.from(cipherBlock, "base64"),
+      doc.encryptedAesKey,
+      doc.iv
+    );
+
+    res.setHeader("Content-Type", doc.mimeType || "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename="${doc.fileName}"`);
+    return res.send(decrypted);
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};

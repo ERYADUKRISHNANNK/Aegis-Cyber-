@@ -16,6 +16,8 @@ import Analytics from "./pages/Analytics";
 import ThreatTopology from "./pages/ThreatTopology";
 import AgentSwarm from "./pages/AgentSwarm";
 import ThreatOracle from "./pages/ThreatOracle";
+import SharedInbox from "./pages/SharedInbox";
+import { PublicShare } from "./pages/PublicShare";
 
 const SecureRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { token } = useAuth();
@@ -30,6 +32,7 @@ export const App: React.FC = () => {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/share/:token" element={<PublicShare />} />
           <Route path="/login" element={<Login />} />
           <Route path="/about" element={<div className="min-h-screen px-4 py-8 sm:px-6 lg:px-10"><Team /></div>} />
           
@@ -45,6 +48,7 @@ export const App: React.FC = () => {
           <Route path="/threats" element={<SecureRoute><ThreatTopology /></SecureRoute>} />
           <Route path="/swarm" element={<SecureRoute><AgentSwarm /></SecureRoute>} />
           <Route path="/oracle" element={<SecureRoute><ThreatOracle /></SecureRoute>} />
+          <Route path="/inbox" element={<SecureRoute><SharedInbox /></SecureRoute>} />
           <Route path="/file/:fileId" element={<SecureRoute><FileLifecycle /></SecureRoute>} />
 
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

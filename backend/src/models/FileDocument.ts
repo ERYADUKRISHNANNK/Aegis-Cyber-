@@ -28,7 +28,9 @@ const FileDocumentSchema = new Schema(
         downloadCount: { type: Number, default: 0 },
         sharedAt: { type: Date, default: Date.now },
         sharedByIp: { type: String, default: "" },
-        sharedByGeo: { type: Schema.Types.Mixed, default: {} }
+        sharedByGeo: { type: Schema.Types.Mixed, default: {} },
+        shareToken: { type: String, default: null },
+        isPublicLink: { type: Boolean, default: false }
       }
     ],
     // === PROVENANCE TRACKING FIELDS ===
