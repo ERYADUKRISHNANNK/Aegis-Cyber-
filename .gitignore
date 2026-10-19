@@ -12,3 +12,10 @@ __pycache__/
 venv/
 coverage/
 .DS_Store
+.freebuff/
+.tmp_b64/
+*.lnk
+*.b64
+blockchain/cache/
+playwright-report/
+test-results/

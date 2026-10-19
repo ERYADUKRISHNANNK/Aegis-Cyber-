@@ -19,10 +19,13 @@ import ThreatOracle from "./pages/ThreatOracle";
 import SharedInbox from "./pages/SharedInbox";
 import { PublicShare } from "./pages/PublicShare";
 
-const SecureRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { token } = useAuth();
+const SecureRoute: React.FC<{ children: React.ReactNode; allowedRoles?: string[] }> = ({ children, allowedRoles }) => {
+  const { token, user } = useAuth();
   if (!token) {
     return <Navigate to="/login" replace />;
+  }
+  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/dashboard" replace />;
   }
   return <DashboardLayout>{children}</DashboardLayout>;
 };
@@ -43,7 +46,7 @@ export const App: React.FC = () => {
           <Route path="/team" element={<SecureRoute><Team /></SecureRoute>} />
           <Route path="/copilot" element={<SecureRoute><Copilot /></SecureRoute>} />
           <Route path="/llm" element={<SecureRoute><LocalLLM /></SecureRoute>} />
-          <Route path="/admin" element={<SecureRoute><Admin /></SecureRoute>} />
+          <Route path="/admin" element={<SecureRoute allowedRoles={["Admin", "Super Admin"]}><Admin /></SecureRoute>} />
           <Route path="/analytics" element={<SecureRoute><Analytics /></SecureRoute>} />
           <Route path="/threats" element={<SecureRoute><ThreatTopology /></SecureRoute>} />
           <Route path="/swarm" element={<SecureRoute><AgentSwarm /></SecureRoute>} />

@@ -237,7 +237,7 @@ export const LocalLLM: React.FC = () => {
           const scored = vectorStore.map(chunk => {
             let dotProduct = 0;
             for (let j = 0; j < queryVector.length; j++) {
-              dotProduct += queryVector[j] * chunk.embedding;
+              dotProduct += queryVector[j] * chunk.embedding[j];
             }
             return { chunk, score: dotProduct };
           });

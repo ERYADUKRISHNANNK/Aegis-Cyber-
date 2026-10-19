@@ -118,7 +118,8 @@ export const uploadFile = async (req: any, res: Response) => {
     let aiResult;
     try {
       const response = await axios.post(`${AI_ENGINE_URL}/api/v1/scan/file`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
+        timeout: 3000
       });
       aiResult = response.data;
     } catch (err: any) {
@@ -824,12 +825,18 @@ export const publicDownload = async (req: any, res: Response) => {
     // Serve the file
     const { ipfsService } = await import("../services/ipfsService");
     const { CryptoHelper } = await import("../utils/cryptoHelper");
+    const { User } = await import("../models/User");
+
+    const ownerUser = await User.findById(doc.owner);
+    if (!ownerUser || !ownerUser.rsaPrivateKeyEncrypted) {
+      return res.status(500).json({ error: "Owner cryptographic keys unavailable for decryption." });
+    }
+
     const cipherBlock = await ipfsService.downloadFile(doc.cid);
-    const decrypted = CryptoHelper.decryptAesGcm(
-      Buffer.from(cipherBlock, "base64"),
-      doc.encryptedAesKey,
-      doc.iv
-    );
+    const authTag = cipherBlock.subarray(cipherBlock.length - 16);
+    const ciphertext = cipherBlock.subarray(0, cipherBlock.length - 16);
+    const aesKey = CryptoHelper.decryptRSA(doc.encryptedAesKey, ownerUser.rsaPrivateKeyEncrypted);
+    const decrypted = CryptoHelper.decryptAES(ciphertext, aesKey, Buffer.from(doc.iv, "hex"), authTag);
 
     res.setHeader("Content-Type", doc.mimeType || "application/octet-stream");
     res.setHeader("Content-Disposition", `attachment; filename="${doc.fileName}"`);

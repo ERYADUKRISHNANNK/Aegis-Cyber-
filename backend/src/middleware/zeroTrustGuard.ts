@@ -140,7 +140,7 @@ export const zeroTrustGuard = (requiredRoles?: string[], policyAttrs?: { timeLim
       };
 
       // Call AI Microservice
-      const response = await axios.post(`${AI_ENGINE_URL}/api/v1/ueba/evaluate`, telemetryPayload);
+      const response = await axios.post(`${AI_ENGINE_URL}/api/v1/ueba/evaluate`, telemetryPayload, { timeout: 2500 });
       const data = response.data;
 
       // Update current session log with calculated risk score

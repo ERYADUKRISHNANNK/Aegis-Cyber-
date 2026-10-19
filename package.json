@@ -1,4 +1,24 @@
 {
+  "name": "aegis-cyber",
+  "version": "1.0.0",
+  "description": "AI-Powered Secure Decentralized File Sharing & Cyber Defense Platform",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/development/dev_runner.js",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:ai": "cd ai_engine && .\\venv\\Scripts\\python.exe app/main.py",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test && npm --prefix blockchain test",
+    "test:blockchain": "npm --prefix blockchain test",
+    "test:backend": "npm --prefix backend test",
+    "test:e2e": "npx playwright test --config=automation/playwright/config/playwright.config.ts",
+    "docker:up": "docker-compose up --build -d",
+    "docker:down": "docker-compose down",
+    "health": "node -e \"const http=require('http');http.get('http://127.0.0.1:5000/api/health',r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>console.log('Backend Health:',r.statusCode,d));}).on('error',e=>console.error('Backend offline:',e.message));\""
+  },
   "devDependencies": {
     "playwright": "^1.61.1"
   }
