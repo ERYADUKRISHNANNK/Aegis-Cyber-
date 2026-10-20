@@ -54,6 +54,8 @@ export class MockUser {
       if (query.username) {
         if (query.username.$regex) {
           if (!query.username.$regex.test(u.username)) return false;
+        } else if (typeof query.username === "string" && typeof u.username === "string") {
+          if (u.username.toLowerCase() !== query.username.toLowerCase()) return false;
         } else if (u.username !== query.username) {
           return false;
         }

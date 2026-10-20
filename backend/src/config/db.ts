@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export let isDbOffline = false;
+export let isDbOffline = true;
 
 export const connectDB = async () => {
   try {

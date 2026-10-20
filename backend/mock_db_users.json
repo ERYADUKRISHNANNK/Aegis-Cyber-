@@ -70,7 +70,7 @@
   },
   {
     "username": "demo",
-    "passwordHash": "$2a$12$jVLvjNtPE.QtGoGCW8ozreASG6JtwZ2AfS5SNfc0dl.1VgvxNf.fm",
+    "passwordHash": "$2a$12$7G/DjYaL251.l/gFs0hc3.TaNaoDFrcI82q9k63RuBcSe3v0QMks.",
     "email": "demo@example.com",
     "role": "User",
     "rsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAlx1/qs44tQr+jUTuZTPX\nuL5vqKQs/827r9mGZGzYIEQuaTXftjyHfnf+pu50BoxHeMrL3YRTWp8YmgKupitv\ngeERwsagGJM7TlP3jcqb/gyG4sRRii9YfulWzdtcu14q/G8mMuDcd8XKNxA5NaAu\nfVrzSEp8vsXsO6LBoV0bKn/xBH96qT/7MHsQ1ovsZWaihHeCwdmswOG1vF12f/08\n+Zud/hZVspEmARoEBPdUkIR91YiL23CE8H6c3dOVzI+KYMbs8iv87cItxKOjl9bP\nN2+D/2J47XJO9dYheFlXpb9XeIpW58o+CdbqNzn6Svi02DTdZ6RmeKrKHA9vfeTl\ng3BOWOyrZZsMiNsGf/un3b02+7oQwDSl2qv3j+3dyA7RmGF5osuhrdkIBI/jRdh6\nSwMZF0bBbRWpQrCcw8eZZK7M2RULZFXatu2LB6ll/XvwuSW5MHp+q5LMF5SfDQGE\nyMHl24pC5gYjBvWJv3OEJb1qZoL9uHCIsQU0Tpm5FqFv2ObV4hs1xOL0+F5KC8yu\n9Tw35HdP0wXS9rsEtnquEuOKuA/wjoqXz+eiMSa/7J2dp/mB2kFRm8BppJ5qlkiO\nsLoBl9PFb43LckCbFdI/fTz2d8/zUez1AYOB+WO/30G6HdpM1KTJ5z86Xq4Q71yd\nt1W3ShLEzKoJUknUT9R/+bkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
@@ -83,12 +83,14 @@
     "fingerprintBase": "test",
     "refreshTokens": [
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNGJkYWIzOTFiNzI3Yjg5ODBjMGQ5OCIsImlhdCI6MTc4MzM1NjA5MywiZXhwIjoxNzgzOTYwODkzfQ.6CpFKLvSz4ZaYg4mIkNQzzPa7no9Nbwm98NSDkvio3s",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNGJkYWIzOTFiNzI3Yjg5ODBjMGQ5OCIsImlhdCI6MTc4MzM1NjE3NCwiZXhwIjoxNzgzOTYwOTc0fQ.zqaoin0jAhKiP0UyqxOHskzyJXGMfNt5VrGojCbVf_E"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNGJkYWIzOTFiNzI3Yjg5ODBjMGQ5OCIsImlhdCI6MTc4MzM1NjE3NCwiZXhwIjoxNzgzOTYwOTc0fQ.zqaoin0jAhKiP0UyqxOHskzyJXGMfNt5VrGojCbVf_E",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNGJkYWIzOTFiNzI3Yjg5ODBjMGQ5OCIsImlhdCI6MTc5MjQ4MDY2MCwiZXhwIjoxNzkzMDg1NDYwfQ.N9C48tM1oKrI8IKC7uQPjznA4gqzK2yL0Pt00jKhSOE",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNGJkYWIzOTFiNzI3Yjg5ODBjMGQ5OCIsImlhdCI6MTc5MjQ4MDY3MiwiZXhwIjoxNzkzMDg1NDcyfQ.h9CK16nMJ2qu_4svloxF50ZZ98_ZDpiMPVHY1EEU-f4"
     ]
   },
   {
     "username": "secoperator",
-    "passwordHash": "$2a$12$ywKGfGbxgToyG5IKzVE5ye3J5HsZrdCawkKkcJfywxQOSJourdhSW",
+    "passwordHash": "$2a$12$2XH2NxhuVnoFJo7feKjom.zLUGzxjvy1N5HEh6NsyE.5J6VHSgs8a",
     "email": "operator@aegis.cyber",
     "role": "Admin",
     "rsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAzI/u+fIKU9sJPEOd71Cg\ntNaBj35+D/MluntOCPSTXuvm0p14JNvGtlOU3YItGBHN1IevdxzHDvuuXN0hBd2I\nIc/tU3wZ0AzOe5QtV+qSwIFsjn2Da5JuiRDthiMxRekpuenbGStQ3pUz2MwbLxf6\nEYzZcz+rOgAC+SFk6sOUOExAmBzsESh4MEND3mm39mzJrjQn+BvBEjYX+0YbIGUc\nW6KDVV4zNODiWXM9f1uV4jaV0uXuMnM/wvvcC57wXqJkmF6O8NqnlciWASF+r+sR\nB0uvB4fwrEfP548tGAbwLuYmMfWDx9g4IoPZ3pnty4nlU6zhsPFG9pWs+GQQoraJ\nLlWedIWSdGTx/3/c4YO374QF0PJNDIXi3lfHWSSDEyAUVDY+zDxOFgQGGMkoFhOv\nRKOMZcODa3HEE9prVlFihv0OKI3wYTecihn8tUww4RPNd34Nitcs2tZ8ntnWzg/b\nae5bT5GO0hXIA5/BHU69YAiFT9W2Qx/6gmJeLiXkQhXSF3L2xEsav9ttBIehCYNv\n+cwiFJ91RxlTolFKpw7iJsyO/bGprnzxEt0Q7PtxSWcwTCIfKgy1GurhwwikeboC\nsLnLO5rMpvfgghZkPPlLA2Jl3ZC0gSZelORXA+BMvtevVoumo1IiVd2lll8f6lcj\nO6815ReEs9fPJXUl/t7FQNUCAwEAAQ==\n-----END PUBLIC KEY-----\n",
@@ -100,13 +102,16 @@
     "updatedAt": "2026-08-07T07:08:42.863Z",
     "fingerprintBase": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/151.0.0.0Safari/537.36",
     "refreshTokens": [
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU4NDdhOTRlNTcxZWFkYzJkNzU4MCIsImlhdCI6MTc4NjA4NjU2NywiZXhwIjoxNzg2NjkxMzY3fQ.Q6kS44TeCAcwH1zaSw4IWFC-T5zgpRlXH3ZnvxmqlYU"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU4NDdhOTRlNTcxZWFkYzJkNzU4MCIsImlhdCI6MTc4NjA4NjU2NywiZXhwIjoxNzg2NjkxMzY3fQ.Q6kS44TeCAcwH1zaSw4IWFC-T5zgpRlXH3ZnvxmqlYU",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU4NDdhOTRlNTcxZWFkYzJkNzU4MCIsImlhdCI6MTc5MjQwMjk3NSwiZXhwIjoxNzkzMDA3Nzc1fQ.dhFV-R_3jlp_T1galvwxX_MIq5dLCfbbQZx5W-EvhOs",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU4NDdhOTRlNTcxZWFkYzJkNzU4MCIsImlhdCI6MTc5MjQ4MDY1OSwiZXhwIjoxNzkzMDg1NDU5fQ.i6KudzAWwc6NDUYq-y882NtnA8xgu1nFAo5H1lF4wTk",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU4NDdhOTRlNTcxZWFkYzJkNzU4MCIsImlhdCI6MTc5MjQ4MDY3MiwiZXhwIjoxNzkzMDg1NDcyfQ.2LIXu4ByYqVLt0HnnNhYD3uHOshU4wDWmcd4DUFUais"
     ],
     "didAddress": "0x39f672f8c9aec5a646122524ea6203e5f3a80222"
   },
   {
     "username": "testuser",
-    "passwordHash": "$2a$12$eqpysKEmgfY6t24p8igxpOzGPgT03vVSoonSyKqK8gTh5ZoDJrS66",
+    "passwordHash": "$2a$12$zb/CCpA1QhraFIVTK5svnOx1duQUYjbv/sQB6Ed2gHpdo1c0yTalW",
     "email": "testuser@example.com",
     "role": "User",
     "rsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1OjOzMK3V9f/MSuAyxHW\nyA5nOULMJ4bXSnH8IQY4hcuebIWEe8hkylYcr7s0rEcsFXB4pf38BZz0REFQg083\n3O0RTysgj9q1wwmeN0LZc3W4LJR/EGTbhrCpoT6Ho/f76A9QiY5hFZJcTCGiiFjb\n200DXq/lEwuQS+AuExVCaynUJcyA7P8QYtibJL2gFPbOLMKxIhi9J3rr8oB66yDi\nJiLPTlznkQ4cm9ZxK7d6JaxrIAgxIym1rqw/hNRHbfKWZXAjq86q/2DLHS0MaMJ0\n2ECiL82q5BHp3cSesVe+vfjNSRDkpusTXV6vHrbPVhJpBACfrFAxB9PHW22V4iBF\n6e0yqrrpQiH0ARgMSxoKja+K2jzT475jbkxcuweSCj3PDmOyhRJtsm3KNLWQovwA\nO3wAj6APLzUAwu4ZoN3iTaQaSikEojRoQeZoIgqUoKBkZDOqoIMp2QVPz7VVSV70\n4eV2o5og7wHhBtvHFHAWrERwAEKJRiC6AqRhCNN8oEhIwuE86wjH+HO7IFqR7QUi\nbmmq67t+zXExrAlS0TZQDRKEmhFEl8076rrX5Z0yc+e1si69HqEQUncdX4PUOgCv\nUmkYchLa3vuP4EqYVSXLk8qBFAOieIGyNq/9MY847Z1qgkb2Wa9OeyVO9p4oP4qA\nZlKltp1d9kudibwWMfshILECAwEAAQ==\n-----END PUBLIC KEY-----\n",
@@ -120,12 +125,14 @@
     "refreshTokens": [
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU5Mzc0OTJmMTI3YjYzZWIxOTJjMiIsImlhdCI6MTc4NjA5MDM3OCwiZXhwIjoxNzg2Njk1MTc4fQ.4tnXNmqPYSkO7Sswd6wIHhoMMvkiwzGZBZT4zN6xYE4",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU5Mzc0OTJmMTI3YjYzZWIxOTJjMiIsImlhdCI6MTc4NjA5MDQxNSwiZXhwIjoxNzg2Njk1MjE1fQ.teg_ED3_V6wgUEVkakZCJzl21nX7ArJvAChhvFlZgYQ",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU5Mzc0OTJmMTI3YjYzZWIxOTJjMiIsImlhdCI6MTc4NjA5MDQ2MSwiZXhwIjoxNzg2Njk1MjYxfQ.9aUyHNy68z_TNLuEnVyBrTxkhhLW18rZ6yIOnsZyjXg"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU5Mzc0OTJmMTI3YjYzZWIxOTJjMiIsImlhdCI6MTc4NjA5MDQ2MSwiZXhwIjoxNzg2Njk1MjYxfQ.9aUyHNy68z_TNLuEnVyBrTxkhhLW18rZ6yIOnsZyjXg",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU5Mzc0OTJmMTI3YjYzZWIxOTJjMiIsImlhdCI6MTc5MjQ4MDY2MCwiZXhwIjoxNzkzMDg1NDYwfQ._T9UcSiCjRfFAVszLc7mionKhiMfENs2f6QKAnH3mL0",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzU5Mzc0OTJmMTI3YjYzZWIxOTJjMiIsImlhdCI6MTc5MjQ4MDY3MywiZXhwIjoxNzkzMDg1NDczfQ.U7ZF3xqsLiXIxaKOYDBR-GEerwEP7Auo52F7WSCxT-Q"
     ]
   },
   {
     "username": "admin",
-    "passwordHash": "$2a$12$5gctn54.IAMU90Sov1rhrOkicNKjhKjeNLwMk7.fWhfe40y3.PcCS",
+    "passwordHash": "$2a$12$EALbo4ev0MqplWd.C1wys.8.sfywI0TzpSxNgte17kNmJEwxbCCwm",
     "email": "admin@aegis.cyber",
     "role": "Admin",
     "rsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwycMkaoSk+o9Yj3n9zLZ\n+IyW5Xo/xSkowjkudxZWGc3+q7wVV0k7WzKm70F6t8e35D5JlI3GOXx2N4oJUyVt\nEdxwH0DiuIYUWjDbGfDmnSU6Fqw4Ia408rv96DouWeNBBTb4a8Cc/GMaY6v3WDpb\nFyn0Gj9O/UzFsrwkrzL2/4cmV5iNlgjlipXMbQ8Sw5BHL5z8J/8jMUzscqJ4btEt\n1hcVx1aRb4LN+jM+oghCTKNHXlw1l1Seoc6fC35dbSvuPnZ94kcSf4CqaPN6E4Ym\nu8wR76UULZmO0hTfEwfqZYRILF1+dgifd1HVmQNTufXJXuVN6+jOWTkb2uQAYgKK\nn1am3ezUOrCzbqvTsoOY3+WJC5Dm0R+e6bpU7qWuFQ9eSgZex3HkTZtqkRYNerUP\nVCJZpcrGWeS3lY4P+MGIxZxeu7Y5kll8X+8tAVtVZlhOvnlfIs85WUuATSlPL6Cb\n0RbxiOI/nfGc937w3PQeKwOIIqBbmV01vcyROUCR5uDJtmIOlmFIkilvV0ep0pIW\neObTvJDvsDrUGV66NBrKNe3r5OcDpKurO59Yj1oSpPW82Rpn775IwwCck0d+GhVA\nkijrLxu7Q8ixFSMir5oUmVfp3Ntk9HFEUCUjdTi2Em9P2jKNRA8IGd3yqNgsbUEq\ncUiMWKRbR+0tO/aqIenpdwMCAwEAAQ==\n-----END PUBLIC KEY-----\n",
@@ -182,7 +189,9 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA3MzAwMiwiZXhwIjoxNzg4Njc3ODAyfQ.HH23qgjdd_TrCVMwZ7SX16QrDEmw0Tw04h11jHdDa-4",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA3MzYyNywiZXhwIjoxNzg4Njc4NDI3fQ.4dde-or2XUp4C9b1KC9eDP6blsv1QOQUPBxbi-yN3tw",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA3Mzg4MywiZXhwIjoxNzg4Njc4NjgzfQ.vG_Qyr8BwBvMn47iTcPpT3YPnoxPhJJdLPbsbLMPQO8",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA5NDEwNCwiZXhwIjoxNzg4Njk4OTA0fQ.qf9VqEQf71gjyzQN-0nIHZM55_YC-ung5UB592fdPmo"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA5NDEwNCwiZXhwIjoxNzg4Njk4OTA0fQ.qf9VqEQf71gjyzQN-0nIHZM55_YC-ung5UB592fdPmo",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc5MjQ4MDY1OSwiZXhwIjoxNzkzMDg1NDU5fQ.XHZkz3c7LmQ_2QD28OIviHGKHbUp2CDtf77KbLJ3We0",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc5MjQ4MDY3MSwiZXhwIjoxNzkzMDg1NDcxfQ.UqgHjHZjqEyGA8XFv33mitPgr-KZmrZaXo6uiL-BjFU"
     ],
     "didAddress": "0xe99222fd8d8826ba6113e165c070bf65757a764d"
   },
@@ -226,7 +235,8 @@
     "whitelistedIps": [],
     "active": true,
     "createdAt": "2026-08-30T14:47:11.917Z",
-    "updatedAt": "2026-08-30T14:47:11.917Z"
+    "updatedAt": "2026-08-30T14:47:11.917Z",
+    "username": "yadukrishnannk2"
   },
   {
     "passwordHash": "$2a$12$v5izL1P8DsclU8/vM7mpOut/dTOECOJvOYea9OgTXI6tD5niumbOq",
@@ -238,10 +248,11 @@
     "whitelistedIps": [],
     "active": true,
     "createdAt": "2026-08-30T14:55:11.381Z",
-    "updatedAt": "2026-08-30T14:55:11.381Z"
+    "updatedAt": "2026-08-30T14:55:11.381Z",
+    "username": "yadukrishnannk22"
   },
   {
-    "passwordHash": "$2a$12$WkB5X29k7zfLEBXPsLtRdei5Bu9FkS9nbtpJDxhgJ1NB5ehqu84W2",
+    "passwordHash": "$2a$12$f4A1v7Atl6bjFOsVDUc1.evI.tz0M79vJt7ZV/ZyIaHo2kQ4gP5b.",
     "email": "admin@gmail.com",
     "role": "User",
     "rsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAmZQPvwGbqjH2MRPPrzU1\n83acYLddi5+cm7XWUtbDqYNaKvoqKcAY920xoFGgP5fNogadbcQMRyDz4/axUMMy\nZ5dXmKDFSTxzvch38VpwyIdJKdr1NJPcGSVAFmCZCo38TXn5Sb8pYlIpZiiui+1w\n9pTi+Ffnro9UAp7d/qsjw1kY75GFa0biTLXu8Do/tEaCtvallfxKkzcPZOnUGP0k\nPROG8S+rQYgbIsz3evEuAcTjhEuCZUXwkk4oh2V4FezQnrejUJVWCdoe5xr1juVa\nF5DW+fCVqyPlctfsgMs0GW8VR5tW7fYLHomJYL1OC61/L56fU6ARH03/Elvg7ra2\nmiaUBmlADJ81UbF+PWmjYlavbAwfg1fcmWp61Ba2mwlhQdBxsN8lXs1Nnw2gXemh\nsTotIQKGrMXbWIQbS0msUjTWUBuGVVszr39nAp33BMbP5/x8yuNLQW/O7maGkJuW\n3ysUOBxrdXu4KvoEnESBaXi6ao9NGMG5TOMH7UUO4J7N6I5s1dzNecdK62gSMB/H\nfctDo34CIUFe4DeUctUh1I+4oG6KOzHpU3hk+bbE4Sr/ZWr218B4nYqWYv7jlg8u\nPhUDeYtI/ed+f1eZfSgA0wFM960KVsGatts72qEsJBDnu9+F53V94MRFEWCz+QWB\nzHoNKNcEfV1x//NFhDje4WkCAwEAAQ==\n-----END PUBLIC KEY-----\n",
@@ -250,6 +261,7 @@
     "whitelistedIps": [],
     "active": true,
     "createdAt": "2026-08-30T15:03:16.910Z",
-    "updatedAt": "2026-08-30T15:03:16.910Z"
+    "updatedAt": "2026-08-30T15:03:16.910Z",
+    "username": "admin"
   }
 ]

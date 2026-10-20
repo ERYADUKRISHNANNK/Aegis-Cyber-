@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 
 const ThreatEventSchema = new Schema(
@@ -140,7 +140,7 @@ class MockThreatIntelligence {
 
 export const ThreatIntelligence = new Proxy(MongooseThreat, {
   get(target, prop) {
-    if (isDbOffline) return (MockThreatIntelligence as any)[prop];
+    if (isDbOffline || mongoose.connection.readyState !== 1) return (MockThreatIntelligence as any)[prop];
     return (target as any)[prop];
   }
 }) as any;

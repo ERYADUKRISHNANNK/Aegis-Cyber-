@@ -177,6 +177,23 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) inside your web browser.
 
+### 6. Quick Start & Demo Credentials
+
+To run both backend and frontend concurrently with a single command from the project root:
+```bash
+npm run dev
+```
+
+#### Pre-Configured Demo Credentials
+
+| Role | Username | Password | Purpose & Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Super Admin / Admin** | `admin` | `admin` *(or `Aegis@Admin2026!`)* | Full administration, user management, policy updates, system health |
+| **SOC Analyst / Operator** | `secoperator` | `admin` *(or `Operator@2026!`)* | SOC dashboard, threat simulation, real-time telemetry, AI swarm |
+| **Standard User** | `demo` *(or `testuser`)* | `demo123` *(or `TestUser@2026!`)* | Secure file encryption, vault storage, P2P sharing, time-lock policies |
+
+> **Tip**: The login page (`/login`) includes interactive **Quick Demo Credentials** buttons to populate and authenticate with 1 click.
+
 ---
 
 ## Deployment (Docker Compose)

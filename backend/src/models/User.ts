@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 import { MockUser } from "./dbMock";
 
@@ -43,7 +43,7 @@ const MongooseUser = model("User", UserSchema);
 // Dynamic proxy failsafe router
 export const User = new Proxy(MongooseUser, {
   get(target, prop) {
-    if (isDbOffline) {
+    if (isDbOffline || mongoose.connection.readyState !== 1) {
       return (MockUser as any)[prop];
     }
     return (target as any)[prop];

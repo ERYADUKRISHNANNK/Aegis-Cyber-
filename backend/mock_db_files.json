@@ -16,9 +16,22 @@
     "_id": "6a7585fd94e571eadc2d7585",
     "isLocked": false,
     "isRecycled": false,
-    "sharedWith": [],
+    "sharedWith": [
+      {
+        "accessor": "6a75847a94e571eadc2d7580",
+        "accessorAddress": "0x39f672f8c9aec5a646122524ea6203e5f3a80222",
+        "validUntil": null,
+        "downloadCount": 0,
+        "sharedAt": "2026-10-19T09:47:45.655Z",
+        "sharedByIp": "127.0.0.1",
+        "sharedByGeo": {},
+        "shareToken": "1b5a93483c5767511cbc6c0fdec0bbab6f5cc65f883c1a79df7602c26d2f3e5d",
+        "isPublicLink": true
+      }
+    ],
     "createdAt": "2026-08-07T07:15:09.833Z",
-    "updatedAt": "2026-08-07T07:15:09.833Z"
+    "updatedAt": "2026-08-07T07:15:09.833Z",
+    "totalShares": 1
   },
   {
     "fileName": "Untitled form (Responses) - Google Sheets.pdf",

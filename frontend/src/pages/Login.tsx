@@ -220,6 +220,55 @@ export const Login: React.FC = () => {
                 >
                   Explore the Aegis project
                 </Link>
+
+                {!isRegister && (
+                  <div className="mt-4 rounded-2xl border border-slate-800/80 bg-[#060410]/80 p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                        Quick Demo Credentials
+                      </span>
+                      <span className="text-[9px] text-slate-500">Click to fill</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUsername("admin");
+                          setPassword("admin");
+                          setError("");
+                        }}
+                        className="rounded-xl border border-cyber-cyan/30 bg-cyber-cyan/10 p-2 text-left hover:border-cyber-cyan/60 hover:bg-cyber-cyan/20 transition group"
+                      >
+                        <div className="text-[11px] font-semibold text-cyber-cyan group-hover:text-white">Admin</div>
+                        <div className="text-[9px] text-slate-400 font-mono">admin / admin</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUsername("secoperator");
+                          setPassword("admin");
+                          setError("");
+                        }}
+                        className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-2 text-left hover:border-purple-500/60 hover:bg-purple-500/20 transition group"
+                      >
+                        <div className="text-[11px] font-semibold text-purple-300 group-hover:text-white">SOC Analyst</div>
+                        <div className="text-[9px] text-slate-400 font-mono">secoperator / admin</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setUsername("demo");
+                          setPassword("demo123");
+                          setError("");
+                        }}
+                        className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2 text-left hover:border-emerald-500/60 hover:bg-emerald-500/20 transition group"
+                      >
+                        <div className="text-[11px] font-semibold text-emerald-300 group-hover:text-white">Demo User</div>
+                        <div className="text-[9px] text-slate-400 font-mono">demo / demo123</div>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </form>
             )}
           </div>

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 import { MockSessionLog } from "./dbMock";
 
@@ -25,7 +25,7 @@ const MongooseSession = model("SessionLog", SessionLogSchema);
 
 export const SessionLog = new Proxy(MongooseSession, {
   get(target, prop) {
-    if (isDbOffline) {
+    if (isDbOffline || mongoose.connection.readyState !== 1) {
       return (MockSessionLog as any)[prop];
     }
     return (target as any)[prop];

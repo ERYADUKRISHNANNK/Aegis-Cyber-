@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 import { MockThreatReport } from "./dbMock";
 
@@ -31,7 +31,7 @@ const MongooseThreat = model("ThreatReport", ThreatReportSchema);
 
 export const ThreatReport = new Proxy(MongooseThreat, {
   get(target, prop) {
-    if (isDbOffline) {
+    if (isDbOffline || mongoose.connection.readyState !== 1) {
       return (MockThreatReport as any)[prop];
     }
     return (target as any)[prop];

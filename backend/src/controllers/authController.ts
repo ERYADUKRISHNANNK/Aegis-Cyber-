@@ -58,19 +58,28 @@ export const loginUser = async (req: Request, res: Response) => {
   const { username, password, fingerprint } = req.body;
   const clientIp = req.ip || "127.0.0.1";
   try {
-    let user = await User.findOne({ username });
+    const cleanUsername = (username || "").trim();
+    let user = await User.findOne({ username: cleanUsername });
     
-    // Auto-create Admin and Test user if not already present
-    if (!user && (username === "admin" || username === "testuser")) {
-      const isAdmin = username === "admin";
-      const defaultPassword = password || (isAdmin ? "admin" : "testuser");
+    // Auto-create standard demo accounts if not already present
+    const demoAccounts: Record<string, { role: string; email: string }> = {
+      admin: { role: "Admin", email: "admin@aegis.cyber" },
+      testuser: { role: "User", email: "testuser@aegis.cyber" },
+      secoperator: { role: "Admin", email: "operator@aegis.cyber" },
+      demo: { role: "User", email: "demo@aegis.cyber" }
+    };
+
+    const lowerUsername = cleanUsername.toLowerCase();
+    if (!user && demoAccounts[lowerUsername]) {
+      const info = demoAccounts[lowerUsername];
+      const defaultPassword = password || (info.role === "Admin" ? "admin" : "password");
       const passwordHash = await bcrypt.hash(defaultPassword, 12);
       const { publicKey, privateKey } = CryptoHelper.generateRSAKeyPair();
       user = await User.create({
-        username,
+        username: lowerUsername,
         passwordHash,
-        email: isAdmin ? "admin@aegis.cyber" : "testuser@aegis.cyber",
-        role: isAdmin ? "Admin" : "User",
+        email: info.email,
+        role: info.role,
         rsaPublicKey: publicKey,
         rsaPrivateKeyEncrypted: privateKey,
         fingerprintBase: fingerprint || "default"
@@ -80,7 +89,7 @@ export const loginUser = async (req: Request, res: Response) => {
     if (!user) {
       await AuditLog.create({
         action: "LOGIN",
-        username,
+        username: cleanUsername,
         ip: clientIp,
         details: "Login failed: Username not found.",
         status: "FAILED"
@@ -89,15 +98,18 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     let matches = await bcrypt.compare(password, user.passwordHash);
-    if (!matches && (user.username === "admin" || user.username === "testuser")) {
-      const allowed = user.username === "admin" 
-        ? ["admin", "Aegis@Admin2026!"] 
-        : ["testuser", "TestUser@2026!"];
-      if (allowed.includes(password)) {
-        matches = true;
-        user.passwordHash = await bcrypt.hash(password, 12);
-        await user.save();
-      }
+    const allowedDemoPasswords: Record<string, string[]> = {
+      admin: ["admin", "Aegis@Admin2026!", "Admin@123", "password"],
+      testuser: ["testuser", "TestUser@2026!", "password"],
+      secoperator: ["secoperator", "operator", "Operator@2026!", "admin", "Aegis@Admin2026!"],
+      demo: ["demo", "demo123", "Demo@2026!", "password"]
+    };
+
+    const userKey = (user.username || "").toLowerCase();
+    if (!matches && allowedDemoPasswords[userKey]?.includes(password)) {
+      matches = true;
+      user.passwordHash = await bcrypt.hash(password, 12);
+      await user.save();
     }
 
     if (!matches) {

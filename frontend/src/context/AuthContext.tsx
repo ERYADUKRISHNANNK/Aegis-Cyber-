@@ -174,6 +174,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isRefreshing = false;
           }
         }
+        if (err.response && err.response.status === 403 && err.response.data?.requireMfa) {
+          setIsMfaRequired(true);
+          setMfaReasons(err.response.data.reasons || ["Zero Trust behavioral anomaly detected."]);
+        }
         return Promise.reject(err);
       }
     );

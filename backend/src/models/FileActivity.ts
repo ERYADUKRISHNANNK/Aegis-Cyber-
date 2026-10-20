@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 
 const GeoLocationSchema = new Schema(
@@ -71,7 +71,7 @@ const MongooseFileActivity = model("FileActivity", FileActivitySchema);
 // Inline mock for offline mode - delegates to dbMock
 export const FileActivity = new Proxy(MongooseFileActivity, {
   get(target, prop) {
-    if (isDbOffline) {
+    if (isDbOffline || mongoose.connection.readyState !== 1) {
       // Lazy-load the mock to avoid circular deps
       const { MockFileActivity } = require("./dbMock");
       return (MockFileActivity as any)[prop];

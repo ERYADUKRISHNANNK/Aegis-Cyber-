@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 import { MockFileDocument } from "./dbMock";
 
@@ -59,7 +59,7 @@ const MongooseFile = model("FileDocument", FileDocumentSchema);
 
 export const FileDocument = new Proxy(MongooseFile, {
   get(target, prop) {
-    if (isDbOffline) {
+    if (isDbOffline || mongoose.connection.readyState !== 1) {
       return (MockFileDocument as any)[prop];
     }
     return (target as any)[prop];

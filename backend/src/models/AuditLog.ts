@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { isDbOffline } from "../config/db";
 import { MockAuditLog } from "./dbMock";
 
@@ -40,7 +40,7 @@ const MongooseAudit = model("AuditLog", AuditLogSchema);
 
 export const AuditLog = new Proxy(MongooseAudit, {
   get(target, prop) {
-    if (isDbOffline) {
+    if (isDbOffline || mongoose.connection.readyState !== 1) {
       return (MockAuditLog as any)[prop];
     }
     return (target as any)[prop];
