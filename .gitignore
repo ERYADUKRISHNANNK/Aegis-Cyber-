@@ -1,21 +1,78 @@
+# ============================================================
+# Aegis Cyber — .gitignore
+# ============================================================
+
+# ---- Secrets & Environment ----
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# ---- Node / NPM ----
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/
+
+# ---- TypeScript Build Output ----
 dist/
 build/
-.vscode/
-.env
-.env.*
+*.tsbuildinfo
+
+# ---- Python ----
 __pycache__/
-*.pyc
-*.pyo
-*.log
-.venv/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
 venv/
+.venv/
+env/
+ENV/
+
+# ---- Frontend ----
+frontend/dist/
+frontend/.vite/
+
+# ---- Backend ----
+backend/dist/
+
+# ---- Logs ----
+logs/
+*.log
+
+# ---- Testing ----
 coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# ---- OS / Editor ----
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
 .freebuff/
 .tmp_b64/
 *.lnk
 *.b64
+
+# ---- Docker ----
+.docker/
+
+# ---- Hardhat / Blockchain ----
 blockchain/cache/
-playwright-report/
-test-results/
+blockchain/artifacts/
+blockchain/typechain-types/
+
+# ---- IPFS Mock runtime files ----
+backend/ipfs_mock/*
+!backend/ipfs_mock/.gitkeep
