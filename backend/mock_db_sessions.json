@@ -54,9 +54,10 @@
     "lon": 77.5946,
     "country": "IN",
     "_id": "6ad71593ce1d4fde8214dbd2",
-    "active": true,
+    "active": false,
     "createdAt": "2026-10-20T07:17:39.395Z",
-    "updatedAt": "2026-10-20T07:17:39.395Z"
+    "updatedAt": "2026-10-20T07:17:39.395Z",
+    "lastActive": "2026-10-21T09:34:19.859Z"
   },
   {
     "userId": "6a75847a94e571eadc2d7580",
@@ -110,9 +111,10 @@
     "lon": 77.5946,
     "country": "IN",
     "_id": "6ad7159f80fee2f2c8323a3e",
-    "active": true,
+    "active": false,
     "createdAt": "2026-10-20T07:17:51.545Z",
-    "updatedAt": "2026-10-20T07:17:51.545Z"
+    "updatedAt": "2026-10-20T07:17:51.545Z",
+    "lastActive": "2026-10-21T09:34:19.859Z"
   },
   {
     "userId": "6a75847a94e571eadc2d7580",
@@ -155,5 +157,20 @@
     "active": true,
     "createdAt": "2026-10-20T07:17:53.450Z",
     "updatedAt": "2026-10-20T07:17:53.450Z"
+  },
+  {
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3OTI1NzUyNTksImV4cCI6MTc5MjU4MjQ1OX0.Z1iqBSqM9C6yUS1TKUiElR7uHEkWixTH9MitMhLM3QI",
+    "ipAddress": "127.0.0.1",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+    "fingerprint": "Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/155.0.0.0Safari/537.36",
+    "lat": 12.9716,
+    "lon": 77.5946,
+    "country": "IN",
+    "_id": "6ad8871b61a49568eecd3385",
+    "active": true,
+    "createdAt": "2026-10-21T09:34:19.787Z",
+    "updatedAt": "2026-10-21T09:34:19.787Z",
+    "lastActive": "2026-10-21T09:37:34.797Z"
   }
 ]

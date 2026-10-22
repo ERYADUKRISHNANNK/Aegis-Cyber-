@@ -4927,5 +4927,17 @@
     "timestamp": "2026-10-20T07:17:53.452Z",
     "createdAt": "2026-10-20T07:17:53.452Z",
     "updatedAt": "2026-10-20T07:17:53.452Z"
+  },
+  {
+    "action": "LOGIN",
+    "userId": "6a75a5b9ff969619afcf3fcb",
+    "username": "admin",
+    "ip": "127.0.0.1",
+    "details": "Login verified.",
+    "status": "SUCCESS",
+    "_id": "6ad8871b61a49568eecd3386",
+    "timestamp": "2026-10-21T09:34:19.792Z",
+    "createdAt": "2026-10-21T09:34:19.792Z",
+    "updatedAt": "2026-10-21T09:34:19.792Z"
   }
 ]

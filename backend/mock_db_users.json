@@ -132,7 +132,7 @@
   },
   {
     "username": "admin",
-    "passwordHash": "$2a$12$EALbo4ev0MqplWd.C1wys.8.sfywI0TzpSxNgte17kNmJEwxbCCwm",
+    "passwordHash": "$2a$12$srk78aeTrY7Ta8G.c0rdTOfJ/a69YryFVgF07NPI3md0uKC6Rt4wu",
     "email": "admin@aegis.cyber",
     "role": "Admin",
     "rsaPublicKey": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwycMkaoSk+o9Yj3n9zLZ\n+IyW5Xo/xSkowjkudxZWGc3+q7wVV0k7WzKm70F6t8e35D5JlI3GOXx2N4oJUyVt\nEdxwH0DiuIYUWjDbGfDmnSU6Fqw4Ia408rv96DouWeNBBTb4a8Cc/GMaY6v3WDpb\nFyn0Gj9O/UzFsrwkrzL2/4cmV5iNlgjlipXMbQ8Sw5BHL5z8J/8jMUzscqJ4btEt\n1hcVx1aRb4LN+jM+oghCTKNHXlw1l1Seoc6fC35dbSvuPnZ94kcSf4CqaPN6E4Ym\nu8wR76UULZmO0hTfEwfqZYRILF1+dgifd1HVmQNTufXJXuVN6+jOWTkb2uQAYgKK\nn1am3ezUOrCzbqvTsoOY3+WJC5Dm0R+e6bpU7qWuFQ9eSgZex3HkTZtqkRYNerUP\nVCJZpcrGWeS3lY4P+MGIxZxeu7Y5kll8X+8tAVtVZlhOvnlfIs85WUuATSlPL6Cb\n0RbxiOI/nfGc937w3PQeKwOIIqBbmV01vcyROUCR5uDJtmIOlmFIkilvV0ep0pIW\neObTvJDvsDrUGV66NBrKNe3r5OcDpKurO59Yj1oSpPW82Rpn775IwwCck0d+GhVA\nkijrLxu7Q8ixFSMir5oUmVfp3Ntk9HFEUCUjdTi2Em9P2jKNRA8IGd3yqNgsbUEq\ncUiMWKRbR+0tO/aqIenpdwMCAwEAAQ==\n-----END PUBLIC KEY-----\n",
@@ -191,7 +191,8 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA3Mzg4MywiZXhwIjoxNzg4Njc4NjgzfQ.vG_Qyr8BwBvMn47iTcPpT3YPnoxPhJJdLPbsbLMPQO8",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc4ODA5NDEwNCwiZXhwIjoxNzg4Njk4OTA0fQ.qf9VqEQf71gjyzQN-0nIHZM55_YC-ung5UB592fdPmo",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc5MjQ4MDY1OSwiZXhwIjoxNzkzMDg1NDU5fQ.XHZkz3c7LmQ_2QD28OIviHGKHbUp2CDtf77KbLJ3We0",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc5MjQ4MDY3MSwiZXhwIjoxNzkzMDg1NDcxfQ.UqgHjHZjqEyGA8XFv33mitPgr-KZmrZaXo6uiL-BjFU"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc5MjQ4MDY3MSwiZXhwIjoxNzkzMDg1NDcxfQ.UqgHjHZjqEyGA8XFv33mitPgr-KZmrZaXo6uiL-BjFU",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNzVhNWI5ZmY5Njk2MTlhZmNmM2ZjYiIsImlhdCI6MTc5MjU3NTI1OSwiZXhwIjoxNzkzMTgwMDU5fQ.TxAuW8JhU0-TSqba0tYFcfnPrJgMMVHrsreX3u77d3I"
     ],
     "didAddress": "0xe99222fd8d8826ba6113e165c070bf65757a764d"
   },
